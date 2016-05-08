@@ -272,6 +272,19 @@
 #define plframe_test_thread_spawn PLNS(plframe_test_thread_spawn)
 #define plframe_test_thread_stop PLNS(plframe_test_thread_stop)
 
+// Missing
+#define plcrash_async_dynloader_free PLNS(plcrash_async_dynloader_free)
+#define plcrash_async_dynloader_read_image_list PLNS(plcrash_async_dynloader_read_image_list)
+#define plcrash_async_image_list_count PLNS(plcrash_async_image_list_count)
+#define plcrash_async_image_list_free PLNS(plcrash_async_image_list_free)
+#define plcrash_async_image_list_get_image PLNS(plcrash_async_image_list_get_image)
+#define plcrash_async_image_list_new_empty PLNS(plcrash_async_image_list_new_empty)
+#define plcrash_nasync_dynloader_new PLNS(plcrash_nasync_dynloader_new)
+#define plcrash_nasync_image_list_new PLNS(plcrash_nasync_image_list_new)
+#define plcrash_async_allocator_create PLNS(plcrash_async_allocator_create)
+#define plcrash_async_allocator_dealloc PLNS(plcrash_async_allocator_dealloc)
+#define plcrash_async_allocator_free PLNS(plcrash_async_allocator_free)
+
 #endif
 
 /*
