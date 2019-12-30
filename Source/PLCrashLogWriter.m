@@ -45,9 +45,13 @@
 #import "PLCrashLogWriterEncoding.h"
 #import "PLCrashAsyncSignalInfo.h"
 #import "PLCrashAsyncSymbolication.h"
+#include "PLCrashRegisterContent.h"
 
 #import "PLCrashSysctl.h"
 #import "PLCrashProcessInfo.h"
+
+#import "PLObjC.h"
+#import "PLString.h"
 
 /**
  * @internal
@@ -131,6 +135,12 @@ enum {
 
     /** CrashReport.thread.register.value */
     PLCRASH_PROTO_THREAD_REGISTER_VALUE_ID = 2,
+    
+    /** CrashReport.thread.register.type */
+    PLCRASH_PROTO_THREAD_REGISTER_TYPE_ID = 3,
+    
+    /** CrashReport.thread.register.content */
+    PLCRASH_PROTO_THREAD_REGISTER_CONTENT_ID = 4,
 
 
     /** CrashReport.images */
@@ -740,6 +750,32 @@ static size_t plcrash_writer_write_process_info (plcrash_async_file_t *file, con
     return rv;
 }
 
+#pragma mark - Memory Types -
+
+#define PLCrashMemType_NullPointer         "null_pointer"
+#define PLCrashMemType_String              "string"
+#define PLCrashMemType_Unknown             "unknown"
+
+static size_t plcrash_writer_write_thread_register_content(plcrash_async_file_t *file, const char* const regname, const uintptr_t address) {
+    size_t rv = 0;
+    const void* object = (const void*)address;
+    if(object == NULL)
+    {
+        rv += plcrash_writer_pack(file, PLCRASH_PROTO_THREAD_REGISTER_TYPE_ID, PLPROTOBUF_C_TYPE_STRING, PLCrashMemType_NullPointer);
+    }
+    else if(plstring_is_valid(object))
+    {
+        rv += plcrash_writer_pack(file, PLCRASH_PROTO_THREAD_REGISTER_TYPE_ID, PLPROTOBUF_C_TYPE_STRING, PLCrashMemType_String);
+        
+        rv += plcrash_writer_pack(file, PLCRASH_PROTO_THREAD_REGISTER_CONTENT_ID, PLPROTOBUF_C_TYPE_STRING, (const char*)object);
+    }
+    else
+    {
+        rv += plcrash_writer_pack(file, PLCRASH_PROTO_THREAD_REGISTER_TYPE_ID, PLPROTOBUF_C_TYPE_STRING, PLCrashMemType_Unknown);
+    }
+    return rv;
+}
+
 /**
  * @internal
  *
@@ -759,6 +795,10 @@ static size_t plcrash_writer_write_thread_register (plcrash_async_file_t *file, 
     /* Write the value */
     uint64val = regval;
     rv += plcrash_writer_pack(file, PLCRASH_PROTO_THREAD_REGISTER_VALUE_ID, PLPROTOBUF_C_TYPE_UINT64, &uint64val);
+
+    if (plregister_is_notable_address(regval)) {
+        rv += plcrash_writer_write_thread_register_content(file, regname, regval);
+    }
     
     return rv;
 }

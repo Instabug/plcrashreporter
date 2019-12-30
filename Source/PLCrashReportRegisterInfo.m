@@ -37,12 +37,17 @@
 /**
  * Initialize with the provided name and value.
  */
-- (id) initWithRegisterName: (NSString *) registerName registerValue: (uint64_t) registerValue {
+- (id) initWithRegisterName: (NSString *) registerName
+              registerValue: (uint64_t) registerValue
+               registerType: (NSString *) registerType
+              registerValue: (NSString *) registerContent {
     if ((self = [super init]) == nil)
         return nil;
     
     _registerName = [registerName retain];
     _registerValue = registerValue;
+    _registerType = [registerType retain];
+    _registerContent = [registerContent retain];
     
     return self;
 }
@@ -54,5 +59,7 @@
 
 @synthesize registerName = _registerName;
 @synthesize registerValue = _registerValue;
+@synthesize registerType = _registerType;
+@synthesize registerContent = _registerContent;
 
 @end

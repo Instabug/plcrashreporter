@@ -35,9 +35,18 @@
     
     /** Register value */
     uint64_t _registerValue;
+
+    /** Register type */
+    NSString *_registerType;
+
+    /** Register value */
+    NSString *_registerContent;
 }
 
-- (id) initWithRegisterName: (NSString *) registerName registerValue: (uint64_t) registerValue;
+- (id) initWithRegisterName: (NSString *) registerName
+              registerValue: (uint64_t) registerValue
+               registerType: (NSString *) registerType
+              registerValue: (NSString *) registerContent;
 
 /**
  * Register name.
@@ -48,5 +57,15 @@
  * Register value.
  */
 @property(nonatomic, readonly) uint64_t registerValue;
+
+/**
+ * Register type.
+ */
+@property(nonatomic, readonly) NSString *registerType;
+
+/**
+ * Register content.
+ */
+@property(nonatomic, readonly) NSString *registerContent;
 
 @end

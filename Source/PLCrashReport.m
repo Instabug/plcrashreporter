@@ -644,8 +644,20 @@ error:
                 return nil;
             }
 
+            NSString *regiserType = nil;
+            if (reg->type != NULL) {
+                regiserType = [NSString stringWithUTF8String:reg->type];
+            }
+
+            NSString *registerContent = nil;
+            if (reg->content != NULL) {
+                registerContent = [NSString stringWithUTF8String:reg->content];
+            }
+
             regInfo = [[[PLCrashReportRegisterInfo alloc] initWithRegisterName: [NSString stringWithUTF8String: reg->name]
-                                                              registerValue: reg->value] autorelease];
+                                                              registerValue: reg->value
+                                                                  registerType:regiserType
+                                                                 registerValue:registerContent] autorelease];
             [registers addObject: regInfo];
         }
 
