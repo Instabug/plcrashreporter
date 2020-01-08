@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2474FC9A23C5BB62000639BF"
+               BlueprintIdentifier = "2474FD0923C5BEEF000639BF"
                BuildableName = "libCrashReporter-iOS-Mac-Catalyst.a"
                BlueprintName = "CrashReporter-iOS-Mac-Catalyst"
                ReferencedContainer = "container:CrashReporter.xcodeproj">
@@ -50,7 +50,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2474FC9A23C5BB62000639BF"
+            BlueprintIdentifier = "2474FD0923C5BEEF000639BF"
             BuildableName = "libCrashReporter-iOS-Mac-Catalyst.a"
             BlueprintName = "CrashReporter-iOS-Mac-Catalyst"
             ReferencedContainer = "container:CrashReporter.xcodeproj">
