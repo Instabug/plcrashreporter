@@ -2055,6 +2055,7 @@
 		24E1884B237D71B90067CE94 /* PLString.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = PLString.c; sourceTree = "<group>"; };
 		2474FD7723C5BEEF000639BF /* libCrashReporter-iOS-Mac-Catalyst.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libCrashReporter-iOS-Mac-Catalyst.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2474FD7723C5BEEF000639BF /* libCrashReporter-macCatalyst.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libCrashReporter-macCatalyst.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		249A49AD23C631A3003BCC66 /* CrashReporter-iOS copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "CrashReporter-iOS copy-Info.plist"; path = "/Users/yousefhamza/Repos/instabug/plcrashreporter/CrashReporter-iOS copy-Info.plist"; sourceTree = "<absolute>"; };
 		2D0E10441141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLCrashReportProcessInfo.h; sourceTree = "<group>"; };
 		2D0E10451141F7DC00CE1BD6 /* PLCrashReportProcessInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLCrashReportProcessInfo.m; sourceTree = "<group>"; };
 		8064D81B1C4D22D8005A8B4C /* libCrashReporter-appletvos.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libCrashReporter-appletvos.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2820,6 +2821,7 @@
 				034768DFFF38A50411DB9C8B /* Products */,
 				059670E30EEFADA6008A0601 /* Dependencies */,
 				F81CF5EE235A0AE20007FA54 /* Frameworks */,
+				249A49AD23C631A3003BCC66 /* CrashReporter-iOS copy-Info.plist */,
 			);
 			indentWidth = 4;
 			name = CrashReporter;
@@ -4032,7 +4034,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "DYNAMIC_FRAMEWORK_SRC=\"${BUILD_DIR}/${CONFIGURATION}-iphone/CrashReporter.framework\"\n\nSIMULATOR_SRC=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PRODUCT_NAME}-iphonesimulator.a\"\nDEVICE_SRC=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PRODUCT_NAME}-iphoneos.a\"\nMAC_CATALYST_SRC=\"${BUILD_DIR}/${CONFIGURATION}-macCatalyst/lib${PRODUCT_NAME}-macCatalyst.a\"\n\nSIMULATOR_DST=\"${BUILD_DIR}/${CONFIGURATION}-iphone/Simulator_Framework\"\nDEVICE_DST=\"${BUILD_DIR}/${CONFIGURATION}-iphone/Device_Framework\"\nMAC_CATALYST_DST=\"${BUILD_DIR}/${CONFIGURATION}-iphone/MAC_CATALYST_Framework\"\n\nmkdir -p ${SIMULATOR_DST}\nmkdir -p ${DEVICE_DST}\nmkdir -p ${MAC_CATALYST_DST}\n\necho \"Copying framework to the new directories\"\ncp -r ${DYNAMIC_FRAMEWORK_SRC} ${SIMULATOR_DST}\ncp -r ${DYNAMIC_FRAMEWORK_SRC} ${DEVICE_DST}\ncp -r ${DYNAMIC_FRAMEWORK_SRC} ${MAC_CATALYST_DST}\n\necho \"Copying binaries into the frameworks\"\ncp ${SIMULATOR_SRC} ${SIMULATOR_DST}/${EXECUTABLE_PATH}\nln -sfh ${SIMULATOR_DST}/${EXECUTABLE_PATH} ${SIMULATOR_DST}/${FULL_PRODUCT_NAME}/${PRODUCT_NAME}\n\ncp ${DEVICE_SRC} ${DEVICE_DST}/${EXECUTABLE_PATH}\nln -sfh ${DEVICE_DST}/${EXECUTABLE_PATH} ${DEVICE_DST}/${FULL_PRODUCT_NAME}/${PRODUCT_NAME}\n\ncp ${MAC_CATALYST_SRC} ${MAC_CATALYST_DST}/${EXECUTABLE_PATH}\nln -sfh ${MAC_CATALYST_DST}/${EXECUTABLE_PATH} ${MAC_CATALYST_DST}/${FULL_PRODUCT_NAME}/${PRODUCT_NAME}\n\necho \"Creating xcframework\"\nxcodebuild -create-xcframework \\\n-framework ${SIMULATOR_DST}/${FULL_PRODUCT_NAME} \\\n-framework ${DEVICE_DST}/${FULL_PRODUCT_NAME} \\\n-framework ${MAC_CATALYST_DST}/${FULL_PRODUCT_NAME} \\\n-output ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.xcframework\n\necho \"Clean up\"\n# Clean up\n# rm -rf ${SIMULATOR_DST}\n# rm -rf ${DEVICE_DST}\n# rm -rf $MAC_CATALYST_DST\n";
+			shellScript = "DYNAMIC_FRAMEWORK_SRC=\"${BUILD_DIR}/${CONFIGURATION}-iphone/CrashReporter.framework\"\n\nSIMULATOR_SRC=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PRODUCT_NAME}-iphonesimulator.a\"\nDEVICE_SRC=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PRODUCT_NAME}-iphoneos.a\"\nMAC_CATALYST_SRC=\"${BUILD_DIR}/${CONFIGURATION}-macCatalyst/lib${PRODUCT_NAME}-macCatalyst.a\"\n\nSIMULATOR_DST=\"${BUILD_DIR}/${CONFIGURATION}-iphone/Simulator_Framework\"\nDEVICE_DST=\"${BUILD_DIR}/${CONFIGURATION}-iphone/Device_Framework\"\nMAC_CATALYST_DST=\"${BUILD_DIR}/${CONFIGURATION}-iphone/MAC_CATALYST_Framework\"\n\ngenerate_framework () {\ncp -RH ${DYNAMIC_FRAMEWORK_SRC} $2\ncp $1 $2/${EXECUTABLE_PATH}\nln -sfh $2/${EXECUTABLE_PATH} $2/${FULL_PRODUCT_NAME}/${PRODUCT_NAME}\n}\n\nmkdir -p ${SIMULATOR_DST}\nmkdir -p ${DEVICE_DST}\nmkdir -p ${MAC_CATALYST_DST}\n\n# Generating frameworks\ngenerate_framework ${SIMULATOR_SRC} ${SIMULATOR_DST}\ngenerate_framework ${DEVICE_SRC} ${DEVICE_DST}\ngenerate_framework ${MAC_CATALYST_SRC} ${MAC_CATALYST_DST}\n\necho \"Creating xcframework\"\nxcodebuild -create-xcframework \\\n-framework ${SIMULATOR_DST}/${FULL_PRODUCT_NAME} \\\n-framework ${DEVICE_DST}/${FULL_PRODUCT_NAME} \\\n-framework ${MAC_CATALYST_DST}/${FULL_PRODUCT_NAME} \\\n-output ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.xcframework\n\necho \"Clean up\"\n# Clean up\nrm -rf ${SIMULATOR_DST}\nrm -rf ${DEVICE_DST}\nrm -rf $MAC_CATALYST_DST\n";
 		};
 		8064D8B71C4D22E5005A8B4C /* Lipo Binary */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5587,7 +5589,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "coop.plausible.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = CrashReporter;
-				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5612,7 +5613,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "coop.plausible.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = CrashReporter;
-				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				ZERO_LINK = NO;
@@ -5693,9 +5693,14 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_EXCEPTIONS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(PL_IOS_DEPLOYMENT_TARGET)";
 				MACH_O_TYPE = staticlib;
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-D$(PL_BUILD_CONFIG_FLAG)=1",
+				);
 				PRODUCT_NAME = "CrashReporter${EFFECTIVE_PLATFORM_NAME}";
 				SDKROOT = iphonesimulator;
 				SKIP_INSTALL = YES;
@@ -5712,9 +5717,14 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
 				GCC_ENABLE_EXCEPTIONS = NO;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(PL_IOS_DEPLOYMENT_TARGET)";
 				MACH_O_TYPE = staticlib;
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-D$(PL_BUILD_CONFIG_FLAG)=1",
+				);
 				PRODUCT_NAME = "CrashReporter${EFFECTIVE_PLATFORM_NAME}";
 				SDKROOT = iphonesimulator;
 				SKIP_INSTALL = YES;
@@ -6216,6 +6226,7 @@
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-D$(PL_BUILD_CONFIG_FLAG)=1",
+					"-fembed-bitcode",
 				);
 				PL_APPLETVOS_DEPLOYMENT_TARGET = 9.0;
 				"PL_ARM_ARCHS[sdk=iphoneos*]" = "$(PL_PRE_XCODE_10_1_ARCHS) arm64e";
@@ -6257,14 +6268,19 @@
 				GCC_ENABLE_EXCEPTIONS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = "$(PL_IOS_DEPLOYMENT_TARGET)";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MACH_O_TYPE = staticlib;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-D$(PL_BUILD_CONFIG_FLAG)=1",
+					"-target",
+					"x86_64-apple-ios13.0-macabi",
+				);
 				PRODUCT_NAME = "CrashReporter${EFFECTIVE_PLATFORM_NAME}";
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = YES;
 			};
 			name = Debug;
@@ -6279,14 +6295,19 @@
 				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
 				GCC_ENABLE_EXCEPTIONS = NO;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = "$(PL_IOS_DEPLOYMENT_TARGET)";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MACH_O_TYPE = staticlib;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-D$(PL_BUILD_CONFIG_FLAG)=1",
+					"-target",
+					"x86_64-apple-ios13.0-macabi",
+				);
 				PRODUCT_NAME = "CrashReporter${EFFECTIVE_PLATFORM_NAME}";
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = YES;
 				ZERO_LINK = NO;
 			};

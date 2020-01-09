@@ -35,7 +35,7 @@
  * This may be used to avoid symbol conflicts between multiple libraries
  * that may both incorporate PLCrashReporter.
  */
- #define PLCRASHREPORTER_PREFIX IBG
+#define PLCRASHREPORTER_PREFIX IBG
 
 
 // We need two extra layers of indirection to make CPP substitute
