@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2474FD0923C5BEEF000639BF"
-               BuildableName = "libCrashReporter-iOS-Mac-Catalyst.a"
+               BuildableName = "libCrashReporter-macCatalyst.a"
                BlueprintName = "CrashReporter-iOS-Mac-Catalyst"
                ReferencedContainer = "container:CrashReporter.xcodeproj">
             </BuildableReference>
@@ -51,7 +51,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2474FD0923C5BEEF000639BF"
-            BuildableName = "libCrashReporter-iOS-Mac-Catalyst.a"
+            BuildableName = "libCrashReporter-macCatalyst.a"
             BlueprintName = "CrashReporter-iOS-Mac-Catalyst"
             ReferencedContainer = "container:CrashReporter.xcodeproj">
          </BuildableReference>
