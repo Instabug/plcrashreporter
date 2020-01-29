@@ -47,9 +47,10 @@
 
 /* Access thread status via macro when defined (will be for arch arm64 and arm64e on Xcode 10 and newer),
  if macros are not available fall back to the old ones */
+#define PL_PTRAUTH_STRIP(pointer) ((uintptr_t)pointer & 0x0000000FFFFFFFFF)
 #if defined(arm_thread_state64_get_pc)
 #define RETGENM(name, type, ts) {\
-    return arm_thread_state64_get_ ## name (((plcrash_async_thread_state_t *)ts)->arm_state. type );\
+    return PL_PTRAUTH_STRIP(arm_thread_state64_get_ ## name (((plcrash_async_thread_state_t *)ts)->arm_state. type ));\
 }
 
 #define SETGENM(name, type, ts, regnum, value) {\
