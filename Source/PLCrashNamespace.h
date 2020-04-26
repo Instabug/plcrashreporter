@@ -79,6 +79,7 @@
 #define PLCrashReporterConfig               PLNS(PLCrashReporterConfig)
 #define PLCrashUncaughtExceptionHandler     PLNS(PLCrashUncaughtExceptionHandler)
 #define PLCrashReportFormatter              PLNS(PLCrashReportFormatter)
+#define PLCrashAsync                        PLNS(PLCrashAsync)
 
 /* Public C functions */
 #define PLCrashMachExceptionForward         PLNS(PLCrashMachExceptionForward)
