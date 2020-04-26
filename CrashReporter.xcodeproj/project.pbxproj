@@ -1281,6 +1281,14 @@
 		C2C80E0F2350D23B0084D513 /* protobuf-c.c in Sources */ = {isa = PBXBuildFile; fileRef = C2C80E072350D23B0084D513 /* protobuf-c.c */; };
 		C2C80E102350D23B0084D513 /* protobuf-c.c in Sources */ = {isa = PBXBuildFile; fileRef = C2C80E072350D23B0084D513 /* protobuf-c.c */; };
 		C2C80E112350D23B0084D513 /* protobuf-c.c in Sources */ = {isa = PBXBuildFile; fileRef = C2C80E072350D23B0084D513 /* protobuf-c.c */; };
+		E1F84FC124559BA8006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
+		E1F84FC224559BA9006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
+		E1F84FC324559BA9006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
+		E1F84FC424559BAA006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
+		E1F84FC524559BAA006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
+		E1F84FC624559BAB006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
+		E1F84FC724559BAB006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
+		E1F84FC824559BAC006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
 		F81CF5EF235A0AE20007FA54 /* libCrashReporter-appletvsimulator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8064D88A1C4D22DA005A8B4C /* libCrashReporter-appletvsimulator.a */; };
 		FCE45210FDD184E397747BE3 /* PLCrashFrameStackUnwind.h in Headers */ = {isa = PBXBuildFile; fileRef = FCE4522F86AC61C08E9DCC17 /* PLCrashFrameStackUnwind.h */; };
 		FCE4550BA74D9DF923CFCD5A /* PLCrashFrameStackUnwind.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE45837C8C773EFFD15C52B /* PLCrashFrameStackUnwind.c */; };
@@ -2821,6 +2829,7 @@
 				0573B44A1681108500395F2A /* PLCrashReportSymbolInfo.h in Headers */,
 				2D0E104E1141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h in Headers */,
 				05EC51E5105316E900DB9D39 /* PLCrashReportSignalInfo.h in Headers */,
+				E1F84FC624559BAB006A90B3 /* PLCrashAsync.h in Headers */,
 				0527063417CCF31400E6A5D8 /* PLCrashFeatureConfig.h in Headers */,
 				05B69E1417CE6271001807C9 /* PLCrashReporterConfig.h in Headers */,
 				0513E23C17D15EE500727919 /* PLCrashReportMachExceptionInfo.h in Headers */,
@@ -2885,6 +2894,7 @@
 				051F067C17B6B0D4006D0EFA /* PLCrashMachExceptionPort.h in Headers */,
 				05BEC41917BAF92A0082CBFB /* PLCrashMachExceptionPortSet.h in Headers */,
 				05BEC43817BF1CB10082CBFB /* PLCrashReporterConfig.h in Headers */,
+				E1F84FC524559BAA006A90B3 /* PLCrashAsync.h in Headers */,
 				05A5E29117C04188008A75E5 /* PLCrashAsyncLinkedList.hpp in Headers */,
 				05B929EA17C9336600B051E3 /* PLCrashUncaughtExceptionHandler.h in Headers */,
 				0513E23617D15ED400727919 /* PLCrashReportMachExceptionInfo.h in Headers */,
@@ -2937,6 +2947,7 @@
 				051F067D17B6B0D4006D0EFA /* PLCrashMachExceptionPort.h in Headers */,
 				05BEC41A17BAF92A0082CBFB /* PLCrashMachExceptionPortSet.h in Headers */,
 				05BEC43917BF1CB10082CBFB /* PLCrashReporterConfig.h in Headers */,
+				E1F84FC424559BAA006A90B3 /* PLCrashAsync.h in Headers */,
 				05A5E29217C04188008A75E5 /* PLCrashAsyncLinkedList.hpp in Headers */,
 				05B929EB17C9336600B051E3 /* PLCrashUncaughtExceptionHandler.h in Headers */,
 				0513E23717D15ED400727919 /* PLCrashReportMachExceptionInfo.h in Headers */,
@@ -2949,6 +2960,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				05E734380EFAC46D005EDFB7 /* PLCrashAsyncSignalInfo.h in Headers */,
+				E1F84FC724559BAB006A90B3 /* PLCrashAsync.h in Headers */,
 				24E1884D237D71B90067CE94 /* PLString.h in Headers */,
 				05E734FD0EFAE59C005EDFB7 /* PLCrashReportSignalInfo.h in Headers */,
 				2D0E10481141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h in Headers */,
@@ -3025,6 +3037,7 @@
 				8064D7D31C4D22D8005A8B4C /* PLCrashMachExceptionPort.h in Headers */,
 				8064D7D41C4D22D8005A8B4C /* PLCrashMachExceptionPortSet.h in Headers */,
 				8064D7D51C4D22D8005A8B4C /* PLCrashReporterConfig.h in Headers */,
+				E1F84FC224559BA9006A90B3 /* PLCrashAsync.h in Headers */,
 				8064D7D61C4D22D8005A8B4C /* PLCrashAsyncLinkedList.hpp in Headers */,
 				8064D7D71C4D22D8005A8B4C /* PLCrashUncaughtExceptionHandler.h in Headers */,
 				8064D7D81C4D22D8005A8B4C /* PLCrashReportMachExceptionInfo.h in Headers */,
@@ -3077,6 +3090,7 @@
 				8064D8421C4D22DA005A8B4C /* PLCrashMachExceptionPort.h in Headers */,
 				8064D8431C4D22DA005A8B4C /* PLCrashMachExceptionPortSet.h in Headers */,
 				8064D8441C4D22DA005A8B4C /* PLCrashReporterConfig.h in Headers */,
+				E1F84FC124559BA8006A90B3 /* PLCrashAsync.h in Headers */,
 				8064D8451C4D22DA005A8B4C /* PLCrashAsyncLinkedList.hpp in Headers */,
 				8064D8461C4D22DA005A8B4C /* PLCrashUncaughtExceptionHandler.h in Headers */,
 				8064D8471C4D22DA005A8B4C /* PLCrashReportMachExceptionInfo.h in Headers */,
@@ -3107,6 +3121,7 @@
 				8064D8A11C4D22E5005A8B4C /* PLCrashReportSymbolInfo.h in Headers */,
 				8064D8A21C4D22E5005A8B4C /* PLCrashReportProcessInfo.h in Headers */,
 				8064D8A31C4D22E5005A8B4C /* PLCrashReportSignalInfo.h in Headers */,
+				E1F84FC324559BA9006A90B3 /* PLCrashAsync.h in Headers */,
 				8064D8A41C4D22E5005A8B4C /* PLCrashFeatureConfig.h in Headers */,
 				8064D8A51C4D22E5005A8B4C /* PLCrashReporterConfig.h in Headers */,
 				8064D8A61C4D22E5005A8B4C /* PLCrashReportMachExceptionInfo.h in Headers */,
@@ -3182,6 +3197,7 @@
 				05102E1617B0151000B5D925 /* PLCrashProcessInfo.h in Headers */,
 				05102E2517B2B80A00B5D925 /* PLCrashHostInfo.h in Headers */,
 				051F067B17B6B0D4006D0EFA /* PLCrashMachExceptionPort.h in Headers */,
+				E1F84FC824559BAC006A90B3 /* PLCrashAsync.h in Headers */,
 				05BEC41817BAF92A0082CBFB /* PLCrashMachExceptionPortSet.h in Headers */,
 				05BEC42E17BD4F400082CBFB /* PLCrashAsyncMachExceptionInfo.h in Headers */,
 				05A5E29017C04188008A75E5 /* PLCrashAsyncLinkedList.hpp in Headers */,
