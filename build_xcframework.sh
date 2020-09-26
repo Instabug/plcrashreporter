@@ -59,7 +59,7 @@ archive_xcode_project "${DEVICE_SCHEME_NAME}" "${XCODEBUILD_DEVICE_DESTINATION}"
 archive_xcode_project "${SIMULATOR_SCHEME_NAME}" "${XCODEBUILD_SIMULATOR_DESTINATION}" "${SIMULATOR_ARCHIVE_PATH}"
 
 xcodebuild  -create-xcframework \
-            -library "${DEVICE_LIBRARY_PATH}" -headers ""${HEADERS_DIR}"" \
-            -library "${SIMULATOR_LIBRARY_PATH}" -headers ""${HEADERS_DIR}"" \
+            -library "${DEVICE_LIBRARY_PATH}" -headers "${HEADERS_DIR}" \
+            -library "${SIMULATOR_LIBRARY_PATH}" -headers "${HEADERS_DIR}" \
             -output "${XCFRAMEWORK_OUTPUT_DIR}/${PRODUCT_NAME}.xcframework" 2>&1 \
             || { echo "Creating XCFramework have been failed" ; exit ; }
