@@ -1,45 +1,65 @@
-# Copy public headers specified in CrashReporter-iOS target
-mkdir -p build_output/headers
-cp Source/CrashReporter.h build_output/headers/
-cp Source/PLCrashNamespace.h build_output/headers/
-cp Source/PLCrashReporter.h build_output/headers/
-cp Source/PLCrashReport.h build_output/headers/
-cp Source/PLCrashReportApplicationInfo.h build_output/headers/
-cp Source/PLCrashReportRegisterInfo.h build_output/headers/
-cp Source/PLCrashReportBinaryImageInfo.h build_output/headers/
-cp Source/PLCrashReportStackFrameInfo.h build_output/headers/
-cp Source/PLCrashReportExceptionInfo.h build_output/headers/
-cp Source/PLCrashReportThreadInfo.h build_output/headers/
-cp Source/PLCrashReportSystemInfo.h build_output/headers/
-cp Source/PLCrashAsyncSignalInfo.h build_output/headers/
-cp Source/PLCrashReportSymbolInfo.h build_output/headers/
-cp Source/PLCrashReportProcessInfo.h build_output/headers/
-cp Source/PLCrashReportSignalInfo.h build_output/headers/
-cp Source/PLCrashAsync.h build_output/headers/
-cp Source/PLCrashFeatureConfig.h build_output/headers/
-cp Source/PLCrashReporterConfig.h build_output/headers/
-cp Source/PLCrashReportMachExceptionInfo.h build_output/headers/
-cp Source/PLCrashMacros.h build_output/headers/
-cp Source/PLCrashReportTextFormatter.h build_output/headers/
-cp Source/PLCrashReportFormatter.h build_output/headers/
-cp Source/PLCrashReportMachineInfo.h build_output/headers/
-cp Source/PLCrashReportProcessorInfo.h build_output/headers/
+XCFRAMEWORK_OUTPUT_DIR="build_output"
+HEADERS_DIR="${XCFRAMEWORK_OUTPUT_DIR}/headers"
+PROJECT_PATH="CrashReporter.xcodeproj"
+PRODUCT_NAME="CrashReporter"
+DEVICE_SCHEME_NAME="CrashReporter-iOS-Device"
+SIMULATOR_SCHEME_NAME="CrashReporter-iOS-Simulator"
+CONFIGURATION="Release"
+XCODEBUILD_DEVICE_DESTINATION="generic/platform=iOS"
+XCODEBUILD_SIMULATOR_DESTINATION="generic/platform=iOS Simulator"
 
-xcodebuild archive  -project 'CrashReporter.xcodeproj' \
-                    -scheme 'CrashReporter-iOS-Device' \
-                    -configuration Release \
-                    -destination 'generic/platform=iOS' \
-                    -archivePath 'build_output/Release-iphoneos.xcarchive' \
-                    SKIP_INSTALL=NO
-                
-xcodebuild archive  -project 'CrashReporter.xcodeproj' \
-                    -scheme 'CrashReporter-iOS-Simulator' \
-                    -configuration Release \
-                    -destination 'generic/platform=iOS Simulator' \
-                    -archivePath 'build_output/Release-iphonesimulator.xcarchive' \
-                    SKIP_INSTALL=NO
+rm -rf "$XCFRAMEWORK_OUTPUT_DIR"
+mkdir -p "$HEADERS_DIR"
+
+# Copy public headers specified in CrashReporter-iOS target
+cp Source/CrashReporter.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashNamespace.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReporter.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReport.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportApplicationInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportRegisterInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportBinaryImageInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportStackFrameInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportExceptionInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportThreadInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportSystemInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashAsyncSignalInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportSymbolInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportProcessInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportSignalInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashAsync.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashFeatureConfig.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReporterConfig.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportMachExceptionInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashMacros.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportTextFormatter.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportFormatter.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportMachineInfo.h "${HEADERS_DIR}" || exit
+cp Source/PLCrashReportProcessorInfo.h "${HEADERS_DIR}" || exit
+
+DEVICE_ARCHIVE_PATH="${XCFRAMEWORK_OUTPUT_DIR}/${CONFIGURATION}-iphoneos.xcarchive"
+SIMULATOR_ARCHIVE_PATH="${XCFRAMEWORK_OUTPUT_DIR}/${CONFIGURATION}-iphonesimulator.xcarchive"
+
+DEVICE_LIBRARY_PATH="${DEVICE_ARCHIVE_PATH}/Products/usr/local/lib/lib${PRODUCT_NAME}-iphoneos.a"
+SIMULATOR_LIBRARY_PATH="${SIMULATOR_ARCHIVE_PATH}/Products/usr/local/lib/lib${PRODUCT_NAME}-iphonesimulator.a"
+
+archive_xcode_project () {
+    xcodebuild archive  -project "${PROJECT_PATH}" \
+                        -scheme "$1" \
+                        -configuration "${CONFIGURATION}" \
+                        -destination "$2" \
+                        -archivePath "$3" \
+                        BUILD_LIBRARIES_FOR_DISTRIBUTION=YES \
+                        SKIP_INSTALL=NO 2>&1 \
+                        || { echo "Archiving project with destination \""$2"\" have been failed" ; exit ; }
+}
+
+archive_xcode_project "${DEVICE_SCHEME_NAME}" "${XCODEBUILD_DEVICE_DESTINATION}" "${DEVICE_ARCHIVE_PATH}"
+
+archive_xcode_project "${SIMULATOR_SCHEME_NAME}" "${XCODEBUILD_SIMULATOR_DESTINATION}" "${SIMULATOR_ARCHIVE_PATH}"
 
 xcodebuild  -create-xcframework \
-            -library 'build_output/Release-iphoneos.xcarchive/Products/usr/local/lib/libCrashReporter-iphoneos.a' -headers 'build_output/headers/' \
-            -library 'build_output/Release-iphonesimulator.xcarchive/Products/usr/local/lib/libCrashReporter-iphonesimulator.a' -headers 'build_output/headers/' \
-            -output 'build_output/CrashReporter.xcframework'
+            -library "${DEVICE_LIBRARY_PATH}" -headers ""${HEADERS_DIR}"" \
+            -library "${SIMULATOR_LIBRARY_PATH}" -headers ""${HEADERS_DIR}"" \
+            -output "${XCFRAMEWORK_OUTPUT_DIR}/${PRODUCT_NAME}.xcframework" 2>&1 \
+            || { echo "Creating XCFramework have been failed" ; exit ; }
