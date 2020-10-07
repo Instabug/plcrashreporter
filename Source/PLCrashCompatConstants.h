@@ -49,7 +49,7 @@
  * ensure this doesn't break inclusion of the header in which the enum identifiers may be defined, we explicitly
  * include the compact unwind header.
  */
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE || TARGET_OS_MACCATALYST
 #include <mach-o/compact_unwind_encoding.h>
 #define UNWIND_ARM64_MODE_MASK                  0x0F000000
 #define UNWIND_ARM64_MODE_FRAMELESS             0x02000000
@@ -64,17 +64,25 @@
 #define UNWIND_ARM64_DWARF_SECTION_OFFSET       0x00FFFFFF
 #endif
 
-/* CPU type/subtype constants */
-#ifndef CPU_SUBTYPE_ARM64E
-# define CPU_SUBTYPE_ARM64E 2
-#elif PLCF_COMPAT_HAS_UPDATED_OSX_SDK(MAC_OS_X_VERSION_10_14_1)
-# warning CPU_SUBTYPE_ARM64E is now defined by the minimum supported Mac SDK. Please remove this define.
-#endif
-
-#ifndef CPU_SUBTYPE_ARM64E
-# define CPU_SUBTYPE_ARM64E 2
-#elif PLCF_COMPAT_HAS_UPDATED_OSX_SDK(MAC_OS_X_VERSION_10_14_1)
-# warning CPU_SUBTYPE_ARM64E is now defined by the minimum supported Mac SDK. Please remove this define.
+/*
+ * OSAtomic* and OSSpinLock are deprecated since macOS 10.12, iOS 10.0 and tvOS 10.0, but suggested replacement
+ * for OSSpinLock is missed at runtime on older versions, so we must use it until we support older versions.
+ */
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= __MAC_10_12 || \
+    __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_10_0 || \
+    __TV_OS_VERSION_MIN_REQUIRED >= __TVOS_10_0 || \
+    __WATCH_OS_VERSION_MIN_REQUIRED >= __WATCHOS_3_0
+#include <os/lock.h>
+#define PLCR_COMPAT_LOCK_TYPE           os_unfair_lock
+#define PLCR_COMPAT_LOCK_INIT           OS_UNFAIR_LOCK_INIT
+#define PLCR_COMPAT_LOCK_LOCK(lock)     os_unfair_lock_lock(lock)
+#define PLCR_COMPAT_LOCK_UNLOCK(lock)   os_unfair_lock_unlock(lock)
+#else
+#include <libkern/OSAtomic.h>
+#define PLCR_COMPAT_LOCK_TYPE           OSSpinLock
+#define PLCR_COMPAT_LOCK_INIT           OS_SPINLOCK_INIT
+#define PLCR_COMPAT_LOCK_LOCK(lock)     OSSpinLockLock(lock)
+#define PLCR_COMPAT_LOCK_UNLOCK(lock)   OSSpinLockUnlock(lock)
 #endif
 
 #endif /* PLCRASH_COMPAT_CONSTANTS_H */
