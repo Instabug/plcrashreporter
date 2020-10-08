@@ -291,45 +291,31 @@
 		24E1881A237D59540067CE94 /* PLCrashRegisterContent.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18818237D59540067CE94 /* PLCrashRegisterContent.c */; };
 		24E1881B237D5E330067CE94 /* PLCrashRegisterContent.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18818237D59540067CE94 /* PLCrashRegisterContent.c */; };
 		24E1881C237D5E330067CE94 /* PLCrashRegisterContent.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18818237D59540067CE94 /* PLCrashRegisterContent.c */; };
-		24E1881D237D5E340067CE94 /* PLCrashRegisterContent.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18818237D59540067CE94 /* PLCrashRegisterContent.c */; };
 		24E1881E237D5E340067CE94 /* PLCrashRegisterContent.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18818237D59540067CE94 /* PLCrashRegisterContent.c */; };
-		24E1881F237D5E350067CE94 /* PLCrashRegisterContent.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18818237D59540067CE94 /* PLCrashRegisterContent.c */; };
 		24E18822237D688A0067CE94 /* PLObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E18820237D688A0067CE94 /* PLObjC.h */; };
 		24E18823237D688A0067CE94 /* PLObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E18820237D688A0067CE94 /* PLObjC.h */; };
 		24E18824237D688A0067CE94 /* PLObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E18820237D688A0067CE94 /* PLObjC.h */; };
-		24E18825237D688A0067CE94 /* PLObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E18820237D688A0067CE94 /* PLObjC.h */; };
 		24E18826237D688A0067CE94 /* PLObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E18820237D688A0067CE94 /* PLObjC.h */; };
-		24E18827237D688A0067CE94 /* PLObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E18820237D688A0067CE94 /* PLObjC.h */; };
 		24E18828237D688A0067CE94 /* PLObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18821237D688A0067CE94 /* PLObjC.c */; };
 		24E18829237D688A0067CE94 /* PLObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18821237D688A0067CE94 /* PLObjC.c */; };
 		24E1882A237D688A0067CE94 /* PLObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18821237D688A0067CE94 /* PLObjC.c */; };
-		24E1882B237D688A0067CE94 /* PLObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18821237D688A0067CE94 /* PLObjC.c */; };
 		24E1882C237D688A0067CE94 /* PLObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18821237D688A0067CE94 /* PLObjC.c */; };
-		24E1882D237D688A0067CE94 /* PLObjC.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18821237D688A0067CE94 /* PLObjC.c */; };
 		24E1883E237D6E260067CE94 /* PLMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1883C237D6E260067CE94 /* PLMemory.h */; };
 		24E1883F237D6E260067CE94 /* PLMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1883C237D6E260067CE94 /* PLMemory.h */; };
 		24E18840237D6E260067CE94 /* PLMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1883C237D6E260067CE94 /* PLMemory.h */; };
-		24E18841237D6E260067CE94 /* PLMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1883C237D6E260067CE94 /* PLMemory.h */; };
 		24E18842237D6E260067CE94 /* PLMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1883C237D6E260067CE94 /* PLMemory.h */; };
-		24E18843237D6E260067CE94 /* PLMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1883C237D6E260067CE94 /* PLMemory.h */; };
 		24E18844237D6E260067CE94 /* PLMemory.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1883D237D6E260067CE94 /* PLMemory.c */; };
 		24E18845237D6E260067CE94 /* PLMemory.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1883D237D6E260067CE94 /* PLMemory.c */; };
 		24E18846237D6E260067CE94 /* PLMemory.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1883D237D6E260067CE94 /* PLMemory.c */; };
-		24E18847237D6E260067CE94 /* PLMemory.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1883D237D6E260067CE94 /* PLMemory.c */; };
 		24E18848237D6E260067CE94 /* PLMemory.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1883D237D6E260067CE94 /* PLMemory.c */; };
-		24E18849237D6E260067CE94 /* PLMemory.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1883D237D6E260067CE94 /* PLMemory.c */; };
 		24E1884C237D71B90067CE94 /* PLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1884A237D71B90067CE94 /* PLString.h */; };
 		24E1884D237D71B90067CE94 /* PLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1884A237D71B90067CE94 /* PLString.h */; };
 		24E1884E237D71B90067CE94 /* PLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1884A237D71B90067CE94 /* PLString.h */; };
-		24E1884F237D71B90067CE94 /* PLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1884A237D71B90067CE94 /* PLString.h */; };
 		24E18850237D71B90067CE94 /* PLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1884A237D71B90067CE94 /* PLString.h */; };
-		24E18851237D71B90067CE94 /* PLString.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E1884A237D71B90067CE94 /* PLString.h */; };
 		24E18852237D71B90067CE94 /* PLString.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1884B237D71B90067CE94 /* PLString.c */; };
 		24E18853237D71B90067CE94 /* PLString.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1884B237D71B90067CE94 /* PLString.c */; };
 		24E18854237D71B90067CE94 /* PLString.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1884B237D71B90067CE94 /* PLString.c */; };
-		24E18855237D71B90067CE94 /* PLString.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1884B237D71B90067CE94 /* PLString.c */; };
 		24E18856237D71B90067CE94 /* PLString.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1884B237D71B90067CE94 /* PLString.c */; };
-		24E18857237D71B90067CE94 /* PLString.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1884B237D71B90067CE94 /* PLString.c */; };
 		2D0E10461141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0E10441141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2D0E10481141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0E10441141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2D0E10491141F7DC00CE1BD6 /* PLCrashReportProcessInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E10451141F7DC00CE1BD6 /* PLCrashReportProcessInfo.m */; };
@@ -484,22 +470,6 @@
 		C29AD6D82456C9B800360AF7 /* PLCrashLogWriterEncodingTests.pb-c.c in Sources */ = {isa = PBXBuildFile; fileRef = C29AD6D62456C9B800360AF7 /* PLCrashLogWriterEncodingTests.pb-c.c */; };
 		C29AD6D92456C9B800360AF7 /* PLCrashLogWriterEncodingTests.pb-c.c in Sources */ = {isa = PBXBuildFile; fileRef = C29AD6D62456C9B800360AF7 /* PLCrashLogWriterEncodingTests.pb-c.c */; };
 		C29AD6DA2456CA6C00360AF7 /* PLCrashLogWriterEncodingTests.proto in Sources */ = {isa = PBXBuildFile; fileRef = 052951EE1696A461006EDA8A /* PLCrashLogWriterEncodingTests.proto */; };
-		E1F84FC124559BA8006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FC224559BA9006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FC324559BA9006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FC424559BAA006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FC524559BAA006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FC624559BAB006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FC724559BAB006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FC824559BAC006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FB9245595D9006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FBA245595DA006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FBB245595DA006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FBC245595DB006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FBD245595DC006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FBE245595DC006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FBF245595DD006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1F84FC0245595DE006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C29AD6DB2456CA7300360AF7 /* PLCrashLogWriterEncodingTests.proto in Sources */ = {isa = PBXBuildFile; fileRef = 052951EE1696A461006EDA8A /* PLCrashLogWriterEncodingTests.proto */; };
 		C29AD6DC2456CA7800360AF7 /* PLCrashLogWriterEncodingTests.proto in Sources */ = {isa = PBXBuildFile; fileRef = 052951EE1696A461006EDA8A /* PLCrashLogWriterEncodingTests.proto */; };
 		C2B72B0F2453496F00D03ABD /* PLCrashReport.pb-c.c in Sources */ = {isa = PBXBuildFile; fileRef = C2B72B0D2453496E00D03ABD /* PLCrashReport.pb-c.c */; };
@@ -724,7 +694,6 @@
 		C2F7F2852451FAED002BD8BF /* PLCrashMachExceptionPort.h in Headers */ = {isa = PBXBuildFile; fileRef = 051F067917B6B0D4006D0EFA /* PLCrashMachExceptionPort.h */; };
 		C2F7F2862451FAF4002BD8BF /* PLCrashSignalHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 05CD339A0EE948EB000FDE88 /* PLCrashSignalHandler.h */; };
 		C2F7F2872451FAFE002BD8BF /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
-		C2F7F2882451FAFE002BD8BF /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
 		C2F7F2892451FAFF002BD8BF /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; };
 		C2F7F28A2451FB0A002BD8BF /* PLCrashAsyncThread_current_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 05EB2B0115B459770066EB4D /* PLCrashAsyncThread_current_defs.h */; };
 		C2F7F28B2451FB0B002BD8BF /* PLCrashAsyncThread_current_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 05EB2B0115B459770066EB4D /* PLCrashAsyncThread_current_defs.h */; };
@@ -772,6 +741,16 @@
 		C2F7F2B72451FC76002BD8BF /* PLCrashFrameCompactUnwind.h in Headers */ = {isa = PBXBuildFile; fileRef = 05F3CD6416DD6A58007911FB /* PLCrashFrameCompactUnwind.h */; };
 		C2F7F2B92451FC78002BD8BF /* PLCrashFrameCompactUnwind.h in Headers */ = {isa = PBXBuildFile; fileRef = 05F3CD6416DD6A58007911FB /* PLCrashFrameCompactUnwind.h */; };
 		C2F7F2BA2451FC78002BD8BF /* PLCrashFrameCompactUnwind.h in Headers */ = {isa = PBXBuildFile; fileRef = 05F3CD6416DD6A58007911FB /* PLCrashFrameCompactUnwind.h */; };
+		E1F84FBA245595DA006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1F84FBB245595DA006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1F84FBF245595DD006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1F84FC0245595DE006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1F84FC224559BA9006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1F84FC324559BA9006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1F84FC524559BAA006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1F84FC624559BAB006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1F84FC724559BAB006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1F84FC824559BAC006A90B3 /* PLCrashAsync.h in Headers */ = {isa = PBXBuildFile; fileRef = 059672F00EF08564008A0601 /* PLCrashAsync.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FCE4550BA74D9DF923CFCD5A /* PLCrashFrameStackUnwind.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE45837C8C773EFFD15C52B /* PLCrashFrameStackUnwind.c */; };
 		FCE4586A7041D332D1025F37 /* PLCrashFrameStackUnwind.h in Headers */ = {isa = PBXBuildFile; fileRef = FCE4522F86AC61C08E9DCC17 /* PLCrashFrameStackUnwind.h */; };
 		FCE45962BDFEEEFAF00DA7E4 /* PLCrashFrameStackUnwind.c in Sources */ = {isa = PBXBuildFile; fileRef = FCE45837C8C773EFFD15C52B /* PLCrashFrameStackUnwind.c */; };
@@ -1934,6 +1913,21 @@
 			path = Source;
 			sourceTree = "<group>";
 		};
+		24E18816237D58F70067CE94 /* Register Content */ = {
+			isa = PBXGroup;
+			children = (
+				24E18817237D59540067CE94 /* PLCrashRegisterContent.h */,
+				24E18818237D59540067CE94 /* PLCrashRegisterContent.c */,
+				24E18820237D688A0067CE94 /* PLObjC.h */,
+				24E18821237D688A0067CE94 /* PLObjC.c */,
+				24E1883C237D6E260067CE94 /* PLMemory.h */,
+				24E1883D237D6E260067CE94 /* PLMemory.c */,
+				24E1884A237D71B90067CE94 /* PLString.h */,
+				24E1884B237D71B90067CE94 /* PLString.c */,
+			);
+			name = "Register Content";
+			sourceTree = "<group>";
+		};
 		32C88DFF0371C24200C91783 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1996,21 +1990,6 @@
 				C29AD6C12456C61E00360AF7 /* SenTestCompat.h */,
 			);
 			path = Tests;
-			sourceTree = "<group>";
-		};
-		24E18816237D58F70067CE94 /* Register Content */ = {
-			isa = PBXGroup;
-			children = (
-				24E18817237D59540067CE94 /* PLCrashRegisterContent.h */,
-				24E18818237D59540067CE94 /* PLCrashRegisterContent.c */,
-				24E18820237D688A0067CE94 /* PLObjC.h */,
-				24E18821237D688A0067CE94 /* PLObjC.c */,
-				24E1883C237D6E260067CE94 /* PLMemory.h */,
-				24E1883D237D6E260067CE94 /* PLMemory.c */,
-				24E1884A237D71B90067CE94 /* PLString.h */,
-				24E1884B237D71B90067CE94 /* PLString.c */,
-			);
-			name = "Register Content";
 			sourceTree = "<group>";
 		};
 		C29AD6C22456C69000360AF7 /* Crash Demo */ = {
@@ -2103,7 +2082,6 @@
 				2D0E104E1141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h in Headers */,
 				05EC51E5105316E900DB9D39 /* PLCrashReportSignalInfo.h in Headers */,
 				E1F84FC624559BAB006A90B3 /* PLCrashAsync.h in Headers */,
-				E1F84FBE245595DC006A90B3 /* PLCrashAsync.h in Headers */,
 				0527063417CCF31400E6A5D8 /* PLCrashFeatureConfig.h in Headers */,
 				05B69E1417CE6271001807C9 /* PLCrashReporterConfig.h in Headers */,
 				0513E23C17D15EE500727919 /* PLCrashReportMachExceptionInfo.h in Headers */,
@@ -2157,7 +2135,6 @@
 				05D9E55216765A0200B39833 /* PLCrashReportRegisterInfo.h in Headers */,
 				C2B72B2724534EE700D03ABD /* protobuf-c.h in Headers */,
 				C2F7F2912451FB17002BD8BF /* PLCrashAsyncThread_arm.h in Headers */,
-				C2F7F2882451FAFE002BD8BF /* PLCrashAsync.h in Headers */,
 				05D9E55D16765D0200B39833 /* PLCrashReportSymbolInfo.h in Headers */,
 				0573B42E1681098E00395F2A /* PLCrashMachExceptionServer.h in Headers */,
 				C2F7F28E2451FB10002BD8BF /* PLCrashAsyncThread_x86.h in Headers */,
@@ -2183,7 +2160,6 @@
 				C2F7F2A32451FB3A002BD8BF /* PLCrashAsyncDwarfEncoding.hpp in Headers */,
 				05BEC43817BF1CB10082CBFB /* PLCrashReporterConfig.h in Headers */,
 				E1F84FC524559BAA006A90B3 /* PLCrashAsync.h in Headers */,
-				E1F84FBD245595DC006A90B3 /* PLCrashAsync.h in Headers */,
 				05A5E29117C04188008A75E5 /* PLCrashAsyncLinkedList.hpp in Headers */,
 				05B929EA17C9336600B051E3 /* PLCrashUncaughtExceptionHandler.h in Headers */,
 				0513E23617D15ED400727919 /* PLCrashReportMachExceptionInfo.h in Headers */,
@@ -3049,7 +3025,6 @@
 				24E18846237D6E260067CE94 /* PLMemory.c in Sources */,
 				05B929EE17C9336600B051E3 /* PLCrashUncaughtExceptionHandler.m in Sources */,
 				0513E23A17D15ED400727919 /* PLCrashReportMachExceptionInfo.m in Sources */,
-				24E1881D237D5E340067CE94 /* PLCrashRegisterContent.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
