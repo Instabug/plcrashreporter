@@ -40,6 +40,7 @@
 #import "PLCrashReporter.h"
 #import "PLCrashReport.h"
 #import "PLCrashReportTextFormatter.h"
+#import "PLCrashAsync.h"
 
 /**
  * @defgroup functions Crash Reporter Functions Reference
