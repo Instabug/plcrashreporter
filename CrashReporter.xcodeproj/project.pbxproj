@@ -1500,6 +1500,7 @@
 				"${DERIVED_FILES_DIR}/${CURRENT_ARCH}/$(INPUT_FILE_BASE).pb-c.c",
 				"${DERIVED_FILES_DIR}/${CURRENT_ARCH}/$(INPUT_FILE_BASE).pb-c.h",
 			);
+			runOncePerArchitecture = 0;
 			script = "cd \"${INPUT_FILE_DIR}\" && protoc-c --c_out=\"${DERIVED_FILES_DIR}/${CURRENT_ARCH}\" \"${INPUT_FILE_NAME}\"\n";
 		};
 		2474FD7323C5BEEF000639BF /* PBXBuildRule */ = {
