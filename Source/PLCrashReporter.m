@@ -646,6 +646,7 @@ static PLCrashReporter *sharedReporter = nil;
 
     /* Set the uncaught exception handler */
     if(_config.shouldRegisterUncaughtExceptionHandler) {
+        PLCF_DEBUG("YH: Registering for excpetions...")
       NSSetUncaughtExceptionHandler(&uncaught_exception_handler);
         setCPPExceptionHandler(&signal_handler_context.writer);
     }

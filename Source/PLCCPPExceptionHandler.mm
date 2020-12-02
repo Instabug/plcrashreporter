@@ -20,7 +20,7 @@ static void PLCExceptionRecordNSException(NSException *exception) {
 
 static void PLCExceptionRecord(const char *name,
                         const char *reason) {
-                PLCF_DEBUG("C++ Not exception with name: %s, reason :%s", name, reason)
+                PLCF_DEBUG("YH: C++ Not exception with name: %s, reason :%s", name, reason)
     writer->uncaught_exception.name = strdup(name);
     writer->uncaught_exception.reason = strdup(reason);
 }
@@ -42,20 +42,20 @@ static const char *PLCExceptionDemangle(const char *symbol) {
 }
 
 static void PLCCPPTerminateHandler(void) {
-    PLCF_DEBUG("C++ Crash detected")
+    PLCF_DEBUG("YH: C++ Crash detected")
     std::type_info *typeInfo = __cxxabiv1::__cxa_current_exception_type();
     const char *name = typeInfo->name();
-    PLCF_DEBUG("C++ Crash detected name: %s", name)
+    PLCF_DEBUG("YH: C++ Crash detected name: %s", name)
     try {
     @try {
         // This could potentially cause a call to std::terminate() if there is actually no active
         // exception.
         
-        PLCF_DEBUG("Throwing excpetion")
+        PLCF_DEBUG("YH: Throwing excpetion")
         throw;
     } @catch (NSException *exception) {
     //    #if TARGET_OS_IPHONE
-        PLCF_DEBUG("C++ Crash detected as exception")
+        PLCF_DEBUG("YH: C++ Crash detected as exception")
         PLCExceptionRecordNSException(exception);
 
     //    #else
@@ -85,5 +85,6 @@ static void PLCCPPTerminateHandler(void) {
 
 void setCPPExceptionHandler(plcrash_log_writer_t *targetWriter) {
     std::set_terminate(PLCCPPTerminateHandler);
+    PLCF_DEBUG("YH: did set terminate method")
     writer = targetWriter;
 }
