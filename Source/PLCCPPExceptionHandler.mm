@@ -79,7 +79,8 @@ static void PLCCPPTerminateHandler(void) {
     } catch (...) {
         PLCExceptionRecord(PLCExceptionDemangle(name), "");
     }
-
+    
+    PLCF_DEBUG("YH: Aborting")
     abort();
 }
 
