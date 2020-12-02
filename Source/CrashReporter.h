@@ -103,6 +103,8 @@ typedef enum {
 #import "PLCrashReporter.h"
 #import "PLCrashReport.h"
 #import "PLCrashReportTextFormatter.h"
+#import "PLCrashAsync.h"
+#import "PLCrashAsyncSignalInfo.h"
 
 /**
  * @mainpage Plausible Crash Reporter

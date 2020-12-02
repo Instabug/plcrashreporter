@@ -3591,7 +3591,6 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = NO;
 				LastUpgradeCheck = 0830;
 				TargetAttributes = {
 					052A45CE136353FB00987004 = {
@@ -3834,7 +3833,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\n\ncp \"lib${PRODUCT_NAME}-iOS.a\" \"${EXECUTABLE_PATH}\"\nln -sfh Versions/${CURRENT_VERSION}/${PRODUCT_NAME} ${FULL_PRODUCT_NAME}/${PRODUCT_NAME}\n";
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}\"\n\ncp \"lib${PRODUCT_NAME}-iOS.a\" \"${EXECUTABLE_PATH}\"\nln -sfh Versions/${CURRENT_VERSION}/${PRODUCT_NAME} ${FULL_PRODUCT_NAME}/${PRODUCT_NAME}\n\nmkdir Modules\necho '\nframework module CrashReporter {\n  umbrella header \"CrashReporter.h\"\n\n  export *\n  module * { export * }\n}\n' >> Modules/module.modulemap\n";
 		};
 		C25664CF23571A340088513E /* Package Framework */ = {
 			isa = PBXShellScriptBuildPhase;
