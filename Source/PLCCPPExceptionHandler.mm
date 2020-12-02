@@ -42,7 +42,9 @@ static const char *PLCExceptionDemangle(const char *symbol) {
 }
 
 static void PLCCPPTerminateHandler(void) {
+    NSString *stackTraceNow = [[NSThread callStackSymbols] description];
     PLCF_DEBUG("YH: C++ Crash detected")
+    PLCF_DEBUG("YH: C++ Crash detected, symbols: %s", [stackTraceNow UTF8String]);
     std::type_info *typeInfo = __cxxabiv1::__cxa_current_exception_type();
     const char *name = typeInfo->name();
     PLCExceptionRecord(PLCExceptionDemangle(name), "");
