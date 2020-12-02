@@ -759,15 +759,15 @@
 		05FDFC84168950F600463E43 /* PLCrashMachExceptionServerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FDFC83168950F600463E43 /* PLCrashMachExceptionServerTests.m */; };
 		05FDFC85168950F600463E43 /* PLCrashMachExceptionServerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FDFC83168950F600463E43 /* PLCrashMachExceptionServerTests.m */; };
 		05FDFC86168950F600463E43 /* PLCrashMachExceptionServerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 05FDFC83168950F600463E43 /* PLCrashMachExceptionServerTests.m */; };
-		244CFFE32577DA8D00459184 /* PLCCPPExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 244CFFE12577DA8D00459184 /* PLCCPPExceptionHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		244CFFE32577DA8D00459184 /* PLCCPPExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 244CFFE12577DA8D00459184 /* PLCCPPExceptionHandler.h */; };
 		244CFFE42577DA8D00459184 /* PLCCPPExceptionHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244CFFE22577DA8D00459184 /* PLCCPPExceptionHandler.mm */; };
 		244CFFE52577DB0A00459184 /* PLCCPPExceptionHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244CFFE22577DA8D00459184 /* PLCCPPExceptionHandler.mm */; };
 		244CFFE62577DB0C00459184 /* PLCCPPExceptionHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244CFFE22577DA8D00459184 /* PLCCPPExceptionHandler.mm */; };
 		244CFFE72577DB0C00459184 /* PLCCPPExceptionHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244CFFE22577DA8D00459184 /* PLCCPPExceptionHandler.mm */; };
 		244CFFE82577DB0D00459184 /* PLCCPPExceptionHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244CFFE22577DA8D00459184 /* PLCCPPExceptionHandler.mm */; };
 		244CFFE92577DB0E00459184 /* PLCCPPExceptionHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244CFFE22577DA8D00459184 /* PLCCPPExceptionHandler.mm */; };
-		244CFFEA2577DB2100459184 /* PLCCPPExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 244CFFE12577DA8D00459184 /* PLCCPPExceptionHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		244CFFEB2577DB2200459184 /* PLCCPPExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 244CFFE12577DA8D00459184 /* PLCCPPExceptionHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		244CFFEA2577DB2100459184 /* PLCCPPExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 244CFFE12577DA8D00459184 /* PLCCPPExceptionHandler.h */; };
+		244CFFEB2577DB2200459184 /* PLCCPPExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 244CFFE12577DA8D00459184 /* PLCCPPExceptionHandler.h */; };
 		24E18819237D59540067CE94 /* PLCrashRegisterContent.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E18817237D59540067CE94 /* PLCrashRegisterContent.h */; };
 		24E1881A237D59540067CE94 /* PLCrashRegisterContent.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18818237D59540067CE94 /* PLCrashRegisterContent.c */; };
 		24E1881B237D5E330067CE94 /* PLCrashRegisterContent.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E18818237D59540067CE94 /* PLCrashRegisterContent.c */; };
