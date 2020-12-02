@@ -33,6 +33,9 @@
 #include "PLCrashMacros.h"
 #include <libkern/OSAtomic.h>
 
+#ifdef __cplusplus
+extern "C++" {
+#endif
 PLCR_CPP_BEGIN_NS
 namespace async {
     
@@ -444,5 +447,9 @@ template <typename V> void async_list<V>::free_list (node *next) {
 
 PLCR_CPP_END_NS
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PLCRASH_ASYNC_LINKED_LIST_H */

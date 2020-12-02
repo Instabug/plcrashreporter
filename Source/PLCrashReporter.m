@@ -46,6 +46,8 @@
 
 #import "PLCrashReporterNSError.h"
 
+#import "PLCCPPExceptionHandler.h"
+
 #import <fcntl.h>
 #import <dlfcn.h>
 #import <mach-o/dyld.h>
@@ -645,6 +647,7 @@ static PLCrashReporter *sharedReporter = nil;
     /* Set the uncaught exception handler */
     if(_config.shouldRegisterUncaughtExceptionHandler) {
       NSSetUncaughtExceptionHandler(&uncaught_exception_handler);
+        setCPPExceptionHandler(&signal_handler_context.writer);
     }
   
     /* Success */
