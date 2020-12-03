@@ -18,6 +18,6 @@
 *
 * @return Returns true if address is notable, false otherwise.
 */
-bool plregister_is_notable_address(const uintptr_t address);
+bool plregister_is_notable_address(const uint64_t address);
 
 #endif /* PLCrashRegisterContent_h */
