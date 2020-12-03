@@ -50,9 +50,7 @@
 #import <dlfcn.h>
 #import <mach-o/dyld.h>
 
-#define NSDEBUG(msg, args...) {\
-    NSLog(@"[PLCrashReporter] " msg, ## args); \
-}
+#import <stdatomic.h>
 
 /** @internal
  * CrashReporter cache directory name. */
@@ -220,10 +218,7 @@ static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t 
     }
 
     /* Extract the thread state */
-    // XXX_ARM64 rdar://14970271 -- In the Xcode 5 GM SDK, _STRUCT_MCONTEXT is not correctly
-    // defined as _STRUCT_MCONTEXT64 when building for arm64; this requires the pl_mcontext_t
-    // cast.
-    plcrash_async_thread_state_mcontext_init(&thread_state, (pl_mcontext_t *) uap->uc_mcontext);
+    plcrash_async_thread_state_mcontext_init(&thread_state, uap->uc_mcontext);
     
     /* Set up the BSD signal info */
     bsd_signal_info.signo = info->si_signo;
@@ -332,7 +327,7 @@ static void image_add_callback (const struct mach_header *mh, intptr_t vmaddr_sl
     
     /* Look up the image info */
     if (dladdr(mh, &info) == 0) {
-        NSLog(@"%s: dladdr(%p, ...) failed", __FUNCTION__, mh);
+        PLCR_LOG("%s: dladdr(%p, ...) failed", __FUNCTION__, mh);
         return;
     }
 
@@ -361,8 +356,9 @@ static void uncaught_exception_handler (NSException *exception) {
      * It is possible that another crash may occur between setting the uncaught
      * exception field, and triggering the signal handler.
      */
-    static int32_t exception_is_handled = 0;
-    if (!OSAtomicCompareAndSwap32(0, 1, &exception_is_handled)) {
+    static atomic_bool exception_is_handled = false;
+    bool expected = false;
+    if (!atomic_compare_exchange_strong(&exception_is_handled, &expected, true)) {
         return;
     }
     
@@ -380,7 +376,7 @@ static void uncaught_exception_handler (NSException *exception) {
 - (id) initWithApplicationIdentifier: (NSString *) applicationIdentifier appVersion: (NSString *) applicationVersion appMarketingVersion: (NSString *) applicationMarketingVersion configuration: (PLCrashReporterConfig *) configuration;
 
 #if PLCRASH_FEATURE_MACH_EXCEPTIONS
-- (PLCrashMachExceptionServer *) enableMachExceptionServerWithPreviousPortSet: (PLCrashMachExceptionPortSet **) previousPortSet
+- (PLCrashMachExceptionServer *) enableMachExceptionServerWithPreviousPortSet: (__strong PLCrashMachExceptionPortSet **) previousPortSet
                                                                      callback: (PLCrashMachExceptionHandlerCallback) callback
                                                                       context: (void *) context
                                                                         error: (NSError **) outError;
@@ -424,13 +420,11 @@ static PLCrashReporter *sharedReporter = nil;
  * clients should initialize a crash reporter instance directly.
  */
 + (PLCrashReporter *) sharedReporter {
-    /* Once we drop 10.5 support, this may be converted to dispatch_once() */
-    static OSSpinLock onceLock = OS_SPINLOCK_INIT;
-    OSSpinLockLock(&onceLock); {
+    static dispatch_once_t onceLock;
+    dispatch_once(&onceLock, ^{
         if (sharedReporter == nil)
             sharedReporter = [[PLCrashReporter alloc] initWithBundle: [NSBundle mainBundle] configuration: [PLCrashReporterConfig defaultConfiguration]];
-    } OSSpinLockUnlock(&onceLock);
-
+    });
     return sharedReporter;
 }
 
@@ -587,8 +581,12 @@ static PLCrashReporter *sharedReporter = nil;
     assert(_applicationIdentifier != nil);
     assert(_applicationVersion != nil);
     plcrash_log_writer_init(&signal_handler_context.writer, _applicationIdentifier, _applicationVersion, _applicationMarketingVersion, [self mapToAsyncSymbolicationStrategy: _config.symbolicationStrategy], false);
-    
-    
+
+    /* Set custom data, if already set before enabling */
+    if (self.customData != nil) {
+        plcrash_log_writer_set_custom_data(&signal_handler_context.writer, self.customData);
+    }
+
     /* Enable the signal handler */
     switch (_config.signalHandlerType) {
         case PLCrashReporterSignalHandlerTypeBSD:
@@ -608,24 +606,20 @@ static PLCrashReporter *sharedReporter = nil;
                 return NO;
             
             /* Enable the server. */
-            _machServer = [self enableMachExceptionServerWithPreviousPortSet: &_previousMachPorts
+            _machServer = [self enableMachExceptionServerWithPreviousPortSet:  &_previousMachPorts
                                                                     callback: &mach_exception_callback
                                                                      context: &signal_handler_context
                                                                        error: outError];
             if (_machServer == nil)
                 return NO;
             
-            /* Acquire references to the autoreleased values */
-            [_machServer retain];
-            [_previousMachPorts retain];
-            
             /*
              * MEMORY WARNING: To ensure that our instance survives for the lifetime of the callback registration,
-             * we retain it here. This is necessary to ensure that the Mach exception server instance and previous port set
+             * we keep a reference on self. This is necessary to ensure that the Mach exception server instance and previous port set
              * survive for the lifetime of the callback. Since there's currently no support for *deregistering* a crash reporter,
              * this simply results in the reporter living forever.
              */
-            [self retain];
+            CFBridgingRetain(self);
             
             /*
              * Save the previous ports. There's a race condition here, in that an exception that is delivered before (or during)
@@ -715,6 +709,11 @@ static plcrash_error_t plcr_live_report_callback (plcrash_async_thread_state_t *
     /* Initialize the output context */
     plcrash_log_writer_init(&writer, _applicationIdentifier, _applicationVersion, _applicationMarketingVersion, [self mapToAsyncSymbolicationStrategy: _config.symbolicationStrategy], true);
     plcrash_async_file_init(&file, fd, MAX_REPORT_BYTES);
+
+    /* Set custom data, if already set before enabling */
+    if (self.customData != nil) {
+        plcrash_log_writer_set_custom_data(&writer, self.customData);
+    }
     
     /* Mock up a SIGTRAP-based signal info */
     plcrash_log_bsd_signal_info_t bsd_signal_info;
@@ -746,13 +745,15 @@ static plcrash_error_t plcr_live_report_callback (plcrash_async_thread_state_t *
     /* Check for write failure */
     NSData *data;
     if (err != PLCRASH_ESUCCESS) {
-        NSLog(@"Write failed with error %s", plcrash_async_strerror(err));
+        PLCR_LOG("Write failed with error %s", plcrash_async_strerror(err));
         plcrash_populate_error(outError, PLCrashReporterErrorUnknown, @"Failed to write the crash report to disk", nil);
         data = nil;
         goto cleanup;
     }
 
-    data = [NSData dataWithContentsOfFile: [NSString stringWithUTF8String: path]];
+    data = [NSData dataWithContentsOfFile:[NSString stringWithUTF8String: path]
+                                  options:NSDataReadingMappedAlways | NSDataReadingUncached
+                                    error:outError];
     if (data == nil) {
         /* This should only happen if our data is deleted out from under us */
         plcrash_populate_error(outError, PLCrashReporterErrorUnknown, NSLocalizedString(@"Unable to open live crash report for reading", nil), nil);
@@ -765,7 +766,7 @@ cleanup:
 
     if (unlink(path) != 0) {
         /* This shouldn't fail, but if it does, there's no use in returning nil */
-        NSLog(@"Failure occured deleting live crash report: %s", strerror(errno));
+        PLCR_LOG("Failure occured deleting live crash report: %s", strerror(errno));
     }
 
     free(path);
@@ -828,6 +829,16 @@ cleanup:
     crashCallbacks.handleSignal = callbacks->handleSignal;
 }
 
+/**
+ * Set the custom data that will be saved in the crash report along the rest of information,
+ * It deletes any previous custom data configured.
+ *
+ * @param customData A string with the custom data to save.
+ */
+- (void) setCustomData: (NSData *) customData {
+    _customData = customData;
+    plcrash_log_writer_set_custom_data(&signal_handler_context.writer, customData);
+}
 
 @end
 
@@ -858,17 +869,17 @@ cleanup:
         return nil;
 
     /* Save the configuration */
-    _config = [configuration retain];
-    _applicationIdentifier = [applicationIdentifier retain];
-    _applicationVersion = [applicationVersion retain];
-    _applicationMarketingVersion = [applicationMarketingVersion retain];
+    _config = configuration;
+    _applicationIdentifier = applicationIdentifier;
+    _applicationVersion = applicationVersion;
+    _applicationMarketingVersion = applicationMarketingVersion;
     
     /* No occurances of '/' should ever be in a bundle ID, but just to be safe, we escape them */
     NSString *appIdPath = [applicationIdentifier stringByReplacingOccurrencesOfString: @"/" withString: @"_"];
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *cacheDir = [paths objectAtIndex: 0];
-    _crashReportDirectory = [[[cacheDir stringByAppendingPathComponent: PLCRASH_CACHE_DIR] stringByAppendingPathComponent: appIdPath] retain];
+    _crashReportDirectory = [[cacheDir stringByAppendingPathComponent: PLCRASH_CACHE_DIR] stringByAppendingPathComponent: appIdPath];
     
     return self;
 }
@@ -892,17 +903,16 @@ cleanup:
         const char *progname = getprogname();
         if (progname == NULL) {
             [NSException raise: PLCrashReporterException format: @"Can not determine process identifier or process name"];
-            [self release];
             return nil;
         }
 
-        NSDEBUG(@"Warning -- bundle identifier, using process name %s", progname);
+        PLCR_LOG("Warning -- bundle identifier, using process name %s", progname);
         bundleIdentifier = [NSString stringWithUTF8String: progname];
     }
 
     /* Verify that the version is available */
     if (bundleVersion == nil) {
-        NSDEBUG(@"Warning -- bundle version unavailable");
+        PLCR_LOG("Warning -- bundle version unavailable");
         bundleVersion = @"";
     }
     
@@ -921,7 +931,7 @@ cleanup:
  * could not be enabled. If no error occurs, this parameter will be left unmodified. You may
  * specify nil for this parameter, and no error information will be provided.
  */
-- (PLCrashMachExceptionServer *) enableMachExceptionServerWithPreviousPortSet: (PLCrashMachExceptionPortSet **) previousPortSet
+- (PLCrashMachExceptionServer *) enableMachExceptionServerWithPreviousPortSet: (__strong PLCrashMachExceptionPortSet **) previousPortSet
                                                                      callback: (PLCrashMachExceptionHandlerCallback) callback
                                                                       context: (void *) context
                                                                         error: (NSError **) outError
@@ -959,7 +969,7 @@ cleanup:
     
     /* Create the server */
     NSError *osError;
-    PLCrashMachExceptionServer *server = [[[PLCrashMachExceptionServer alloc] initWithCallBack: callback context: context error: &osError] autorelease];
+    PLCrashMachExceptionServer *server = [[PLCrashMachExceptionServer alloc] initWithCallBack: callback context: context error: &osError];
     if (server == nil) {
         plcrash_populate_error(outError, PLCrashReporterErrorOperatingSystem, @"Failed to instantiate the Mach exception server.", osError);
         return nil;
@@ -983,21 +993,6 @@ cleanup:
 
 #endif /* PLCRASH_FEATURE_MACH_EXCEPTIONS */
 
-- (void) dealloc {
-    [_config release];
-
-#if PLCRASH_FEATURE_MACH_EXCEPTIONS
-    [_machServer release];
-    [_previousMachPorts release];
-#endif /* PLCRASH_FEATURE_MACH_EXCEPTIONS */
-
-    [_crashReportDirectory release];
-    [_applicationIdentifier release];
-    [_applicationVersion release];
-    [_applicationMarketingVersion release];
-
-    [super dealloc];
-}
 
 /**
  * Map the configuration defined @a strategy to the backing plcrash_async_symbol_strategy_t representation.

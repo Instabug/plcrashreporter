@@ -41,6 +41,7 @@ extern "C" {
 #import "PLCrashFrameWalker.h"
     
 #import "PLCrashAsyncSymbolication.h"
+#import "PLCrashLogWriterEncoding.h"
 
 #include <uuid/uuid.h>
 
@@ -77,16 +78,16 @@ typedef struct plcrash_log_writer {
     /** System data */
     struct {
         /** The host OS version. */
-        char *version;
+        PLProtobufCBinaryData version;
 
         /** The host OS build number. This may be NULL. */
-        char *build;
+        PLProtobufCBinaryData build;
     } system_info;
 
     /* Machine data */
     struct {
         /** The host model (may be NULL). */
-        char *model;
+        PLProtobufCBinaryData model;
 
         /** The host CPU type. */
         uint64_t cpu_type;
@@ -104,31 +105,31 @@ typedef struct plcrash_log_writer {
     /** Application data */
     struct {
         /** Application identifier */
-        char *app_identifier;
+        PLProtobufCBinaryData app_identifier;
 
         /** Application version */
-        char *app_version;
+        PLProtobufCBinaryData app_version;
         
         /** Application marketing version (may be null) */
-        char *app_marketing_version;
+        PLProtobufCBinaryData app_marketing_version;
     } application_info;
     
     /** Process data */
     struct {
         /** Process name (may be null) */
-        char *process_name;
+        PLProtobufCBinaryData process_name;
         
         /** Process ID */
         pid_t process_id;
         
         /** Process path (may be null) */
-        char *process_path;
+        PLProtobufCBinaryData process_path;
         
         /** Process start time */
         time_t start_time;
         
         /** Parent process name (may be null) */
-        char *parent_process_name;
+        PLProtobufCBinaryData parent_process_name;
         
         /** Parent process ID */
         pid_t parent_process_id;
@@ -154,6 +155,10 @@ typedef struct plcrash_log_writer {
         /** Call stack frame count, or 0 if the call stack is unavailable */
         size_t callstack_count;
     } uncaught_exception;
+
+    /** Custom user data */
+    PLProtobufCBinaryData custom_data;
+
 } plcrash_log_writer_t;
 
 /**
@@ -220,6 +225,8 @@ plcrash_error_t plcrash_log_writer_init (plcrash_log_writer_t *writer,
                                          BOOL user_requested);
 void plcrash_log_writer_set_exception (plcrash_log_writer_t *writer, NSException *exception);
 
+void plcrash_log_writer_set_custom_data (plcrash_log_writer_t *writer, NSData *custom_data);
+
 plcrash_error_t plcrash_log_writer_write (plcrash_log_writer_t *writer,
                                           thread_t crashed_thread,
                                           plcrash_async_image_list_t *image_list,
@@ -230,7 +237,7 @@ plcrash_error_t plcrash_log_writer_write (plcrash_log_writer_t *writer,
 plcrash_error_t plcrash_log_writer_close (plcrash_log_writer_t *writer);
 void plcrash_log_writer_free (plcrash_log_writer_t *writer);
 
-/**
+/*
  * @} plcrash_log_writer
  */
     

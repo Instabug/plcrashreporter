@@ -10,9 +10,9 @@
 #include "PLMemory.h"
 #include "PLString.h"
 
-static inline bool plregister_is_valid_pointer(const uintptr_t address)
+static inline bool plregister_is_valid_pointer(const uint64_t address)
 {
-    if(address == (uintptr_t)NULL)
+    if(address == (uint64_t)NULL)
     {
         return false;
     }
@@ -28,7 +28,7 @@ static inline bool plregister_is_valid_pointer(const uintptr_t address)
     return true;
 }
 
-bool plregister_is_notable_address(const uintptr_t address)
+bool plregister_is_notable_address(const uint64_t address)
 {
     if(!plregister_is_valid_pointer(address))
     {
