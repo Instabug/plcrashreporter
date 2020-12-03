@@ -22,8 +22,10 @@ static void (*originalHandler)(void);
 static void PLCExceptionRecord(const char *name,
                         const char *reason) {
                 PLCF_DEBUG("YH: C++ Not exception with name: %s, reason :%s", name, reason)
-    writer->uncaught_exception.name = strdup(name);
-    writer->uncaught_exception.reason = strdup(reason);
+    char* p = strdup("C++ crash");
+    char* pc = strdup("C++ crash reason");
+    writer->uncaught_exception.name = p;
+    writer->uncaught_exception.reason = pc;
 }
 
 static const char *PLCExceptionDemangle(const char *symbol) {
