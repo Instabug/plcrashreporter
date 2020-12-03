@@ -13,6 +13,7 @@
 #include <typeinfo>
 
 static plcrash_log_writer_t *writer;
+static void (*originalHandler)(void);
 
 //static void PLCExceptionRecordNSException(NSException *exception) {
 //    plcrash_log_writer_set_exception(writer, exception);
@@ -42,12 +43,38 @@ static const char *PLCExceptionDemangle(const char *symbol) {
 }
 
 static void PLCCPPTerminateHandler(void) {
-    NSString *stackTraceNow = [NSThread callStackSymbols][4];
-    PLCF_DEBUG("YH: C++ Crash detected")
-    PLCF_DEBUG("YH: C++ Crash detected, symbols: %s", [stackTraceNow UTF8String]);
+    NSArray *stackTrace = [NSThread callStackSymbols];
+    PLCF_DEBUG("YH: C++ Crash detected, call stack: ")
+    for (NSString *frame in stackTrace) {
+        PLCF_DEBUG("YH: Frame: %s", [frame UTF8String])
+    }
+    void (*handler)(void) = originalHandler;
+    if (handler == PLCCPPTerminateHandler) {
+        PLCF_DEBUG("YH: Error: original handler was set recursively");
+      handler = NULL;
+    }
+
+    // Restore pre-existing handler, if any. Do this early, so that
+    // if std::terminate is called while we are executing here, we do not recurse.
+    if (handler) {
+        PLCF_DEBUG("YH: restoring pre-existing handler");
+
+      // To prevent infinite recursion in this function, check that we aren't resetting the terminate
+      // handler to the same function again, which would be this function in the event that we can't
+      // actually change the handler during a terminate.
+      if (std::set_terminate(handler) == handler) {
+        PLCF_DEBUG("YH: handler has already been restored, aborting");
+        abort();
+      }
+    }
+
     std::type_info *typeInfo = __cxxabiv1::__cxa_current_exception_type();
-    const char *name = typeInfo->name();
-    PLCExceptionRecord(PLCExceptionDemangle(name), "");
+    if (typeInfo) {
+        const char *name = typeInfo->name();
+        PLCExceptionRecord(PLCExceptionDemangle(name), "");
+    } else {
+        PLCF_DEBUG("YH: no active exception");
+    }
 //    PLCF_DEBUG("YH: C++ Crash detected name: %s", name)
 //    try {
 //    @try {
@@ -64,7 +91,7 @@ static void PLCCPPTerminateHandler(void) {
 //    //    #else
 //    //          // There's no need to record this here, because we're going to get
 //    //          // the value forward to us by AppKit
-//    //          FIRCLSSDKLog("Skipping ObjC exception at this point\n");
+//    //          FIRCLSSDKLog("Skipping ObjC exception at this point");
 //    //    #endif
 //    }
 //    } catch (const char *exc) {
@@ -83,12 +110,17 @@ static void PLCCPPTerminateHandler(void) {
 //        PLCExceptionRecord(PLCExceptionDemangle(name), "");
 //    }
     
+    // only do this if there was a pre-existing handler
+    if (handler) {
+        PLCF_DEBUG("YH: invoking pre-existing handler");
+      handler();
+    }
     PLCF_DEBUG("YH: Aborting")
     abort();
 }
 
 void setCPPExceptionHandler(plcrash_log_writer_t *targetWriter) {
-    std::set_terminate(PLCCPPTerminateHandler);
+    originalHandler = std::set_terminate(PLCCPPTerminateHandler);
     PLCF_DEBUG("YH: did set terminate method")
     writer = targetWriter;
 }
