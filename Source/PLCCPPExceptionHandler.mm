@@ -1,12 +1,12 @@
 //
-//  PLCCPPExceptionHandler.m
+//  PLCCPPExceptionHandler.mm
 //  CrashReporter-MacOSX
 //
 //  Created by Yousef Hamza on 12/2/20.
 //
 
-#import "PLCrashReporter.h"
-#import "PLCCPPExceptionHandler.h"
+#include "PLCrashReporter.h"
+#include "PLCCPPExceptionHandler.h"
 #include <cxxabi.h>
 #include <exception>
 #include <string>
@@ -45,11 +45,12 @@ static const char *PLCExceptionDemangle(const char *symbol) {
 }
 
 static void PLCCPPTerminateHandler(void) {
-    NSArray *stackTrace = [NSThread callStackSymbols];
-    PLCF_DEBUG("YH: C++ Crash detected, call stack: ")
-    for (NSString *frame in stackTrace) {
-        PLCF_DEBUG("YH: Frame: %s", [frame UTF8String])
-    }
+    /* Using NSThread to get stacktrace */
+//    NSArray *stackTrace = [NSThread callStackSymbols];
+//    PLCF_DEBUG("YH: C++ Crash detected, call stack: ")
+//    for (NSString *frame in stackTrace) {
+//        PLCF_DEBUG("YH: Frame: %s", [frame UTF8String])
+//    }
     void (*handler)(void) = originalHandler;
     if (handler == PLCCPPTerminateHandler) {
         PLCF_DEBUG("YH: Error: original handler was set recursively");

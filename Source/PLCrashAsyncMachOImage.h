@@ -91,6 +91,9 @@ typedef struct plcrash_async_macho {
     const plcrash_async_byteorder_t *byteorder;
 } plcrash_async_macho_t;
 
+// Use only filename in debug logging because PLCF_DEBUG has length limit.
+#define PLCF_DEBUG_IMAGE_NAME(image) (strrchr(image->name, '/') + 1)
+
 /**
  * @internal
  *
@@ -217,7 +220,7 @@ void plcrash_async_macho_mapped_segment_free (pl_async_macho_mapped_segment_t *s
 
 void plcrash_nasync_macho_free (plcrash_async_macho_t *image);
 
-/**
+/*
  * @}
  */
     
