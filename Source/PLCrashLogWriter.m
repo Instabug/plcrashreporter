@@ -902,6 +902,7 @@ struct pl_symbol_cb_ctx {
  */
 static void plcrash_writer_write_thread_frame_symbol_cb (pl_vm_address_t address, const char *name, void *ctx) {
     struct pl_symbol_cb_ctx *cb_ctx = ctx;
+    PLCF_DEBUG("Writing symbol: %s", name)
     cb_ctx->msgsize = (uint32_t) plcrash_writer_write_symbol(cb_ctx->file, name, address);
 }
 
@@ -916,6 +917,7 @@ static void plcrash_writer_write_thread_frame_symbol_cb (pl_vm_address_t address
 static size_t plcrash_writer_write_thread_frame (plcrash_async_file_t *file, plcrash_log_writer_t *writer, uint64_t pcval, plcrash_async_image_list_t *image_list, plcrash_async_symbol_cache_t *findContext) {
     size_t rv = 0;
 
+    PLCF_DEBUG("Writing PC val: %llu", pcval)
     rv += plcrash_writer_pack(file, PLCRASH_PROTO_THREAD_FRAME_PC_ID, PLPROTOBUF_C_TYPE_UINT64, &pcval);
     
     plcrash_async_image_list_set_reading(image_list, true);
@@ -1006,7 +1008,7 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
                 cursor_thr_state = *thread_ctx;
                 PLCF_DEBUG("using cursor from the context");
                 cursor = *((plframe_cursor_t *)cursor_thr_state.cursor);
-                plframe_cursor_restart_recording(&cursor);
+//                plframe_cursor_restart_recording(&cursor);
                 PLCF_DEBUG("used cursor from the context");
             } else {
                 PLCF_DEBUG("Creating thread context");
@@ -1041,12 +1043,12 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
                 break;
             } else {
                 PLCF_DEBUG("Next -> PC at __cxa_throw: 0x%" PRIx64, (uint64_t) pc);
-                plcrash_greg_t fp = 0;
-                plframe_cursor_get_reg(&cursor, PLCRASH_REG_FP, &fp);
-                plcrash_greg_t sp = 0;
-                plframe_cursor_get_reg(&cursor, PLCRASH_REG_SP, &sp);
-                PLCF_DEBUG("Next -> FP at __cxa_throw: 0x%" PRIx64, (uint64_t) fp);
-                PLCF_DEBUG("Next -> SP at __cxa_throw: 0x%" PRIx64, (uint64_t) sp);
+//                plcrash_greg_t fp = 0;
+//                plframe_cursor_get_reg(&cursor, PLCRASH_REG_FP, &fp);
+//                plcrash_greg_t sp = 0;
+//                plframe_cursor_get_reg(&cursor, PLCRASH_REG_SP, &sp);
+//                PLCF_DEBUG("Next -> FP at __cxa_throw: 0x%" PRIx64, (uint64_t) fp);
+//                PLCF_DEBUG("Next -> SP at __cxa_throw: 0x%" PRIx64, (uint64_t) sp);
             }
 
             /* Determine the size */

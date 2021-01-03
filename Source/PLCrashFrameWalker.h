@@ -154,6 +154,7 @@ typedef struct plframe_cursor {
 
     /** The flag to determine if recorded mode is active  */
     bool _recorded;
+    uint32_t _max_depth;
     
     /** The recording list when in recorded mode */
 //#ifdef __cplusplus

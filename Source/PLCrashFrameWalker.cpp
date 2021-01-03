@@ -71,11 +71,14 @@ plframe_error_t plframe_cursor_thread_state_recorded_at(plframe_cursor *cursor, 
 //        for (size_t i = 0; i <= index;i++) {
 //            next = cursor->_list->next(next);
 //        }
+    if (index >= cursor->_max_depth) {
+        return PLFRAME_ENOFRAME;
+    }
     plframe_cursor_info info = cursor->_list[index];
     plcrash_async_thread_state_set_reg(thread_state, PLCRASH_REG_FP, info.fp);
     plcrash_async_thread_state_set_reg(thread_state, PLCRASH_REG_IP, info.ip);
     plcrash_async_thread_state_set_reg(thread_state, PLCRASH_REG_SP, info.sp);
-    memset(&thread_state->valid_regs, 0xFF, sizeof(thread_state->valid_regs));
+//    memset(&thread_state->valid_regs, 0xFF, sizeof(thread_state->valid_regs));
 //        if (next != NULL) {
 ////            *thread_state ;
 //            plframe_cursor_info info = next->value();
@@ -166,7 +169,7 @@ plframe_error_t plframe_cursor_next_with_readers (plframe_cursor_t *cursor, plfr
             plcrash_async_thread_state thread_state;
             plframe_error_t err = plframe_cursor_thread_state_recorded_at(cursor, 0, &thread_state);
             if (err != PLFRAME_ESUCCESS) {
-                PLCF_DEBUG("No state has been recoreded");
+                PLCF_DEBUG("No state has been recoreded: %s", IBGplframe_strerror(err));
                 return PLFRAME_EUNKNOWN;
             }
             plcrash_async_memcpy(&cursor->frame.thread_state, &thread_state, sizeof(cursor->frame.thread_state));
@@ -303,7 +306,7 @@ void plframe_cursor_start_recording (plframe_cursor_t *cursor) {
 
 void plframe_cursor_restart_recording (plframe_cursor_t *cursor) {
     cursor->_recorded = true;
-//    cursor->_max_depth = cursor->depth;
+    cursor->_max_depth = cursor->depth;
     cursor->depth = 0;
 }
 

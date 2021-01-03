@@ -135,12 +135,12 @@ typedef int64_t pl_vm_off_t;
 // is not async-safe and should not be enabled in release builds
 //#ifdef PLCF_RELEASE_BUILD
 //
-//#define PLCF_DEBUG(msg, args...) asdas
+//#define PLCF_DEBUG(msg, args...)
 //
 //#else
 
 #define PLCF_DEBUG(msg, args...) {\
-    char __tmp_output[256];\
+    char __tmp_output[128];\
     snprintf(__tmp_output, sizeof(__tmp_output), "[PLCrashReporter] "); \
     plcrash_async_writen(STDERR_FILENO, __tmp_output, strlen(__tmp_output));\
     \
