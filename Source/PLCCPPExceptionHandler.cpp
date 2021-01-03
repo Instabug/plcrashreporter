@@ -105,13 +105,14 @@ extern "C"
         }
         PLCF_DEBUG("Creating cursor to loop on all symbols");
         plframe_cursor_t cursor;
-        plframe_error_t ferr = plframe_cursor_init(&cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
+        plframe_error_t ferr = plframe_cursor_init_recorded_mode(&cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
         if (ferr != PLFRAME_ESUCCESS) {
             PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
         }
         while ((ferr = plframe_cursor_next(&cursor)) == PLFRAME_ESUCCESS) {
             /* Fetch the PC value */
             plcrash_greg_t pc = 0;
+            plframe_cursor_record(&cursor, &cursor.frame.thread_state);
             if ((ferr = plframe_cursor_get_reg(&cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
                 PLCF_DEBUG("Could not retrieve frame PC register: %s", plframe_strerror(ferr));
                 break;
@@ -140,6 +141,7 @@ extern "C"
             plcrash_async_image_list_set_reading(&shared_image_list, false);
         }
 
+        pl_cpp_thread_state_final.cursor = &cursor;
         PLCF_DEBUG("finished looping on all symbols");
 
         /* Did we reach the end successfully? */

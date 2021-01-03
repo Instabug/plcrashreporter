@@ -78,6 +78,7 @@ static void plframe_cursor_internal_init (plframe_cursor_t *cursor, task_t task,
     cursor->depth = 0;
     cursor->task = task;
     cursor->image_list = image_list;
+    cursor->recorded = false;
     mach_port_mod_refs(mach_task_self(), cursor->task, MACH_PORT_RIGHT_SEND, 1);    
 }
 
@@ -171,14 +172,16 @@ plframe_error_t plframe_cursor_next_with_readers (plframe_cursor_t *cursor, plfr
     plframe_error_t ferr = PLFRAME_EINVAL; // default return value if reader_count is 0.
     
     if (cursor->recorded) {
-        plcrash::async::async_list<plcrash_async_thread_state_t *>::node *next = NULL;
-        for (size_t i = 0; i < cursor->depth;i++) {
-            next = cursor->_list->next(next);
-        }
-        if (next->value() != NULL) {
-            frame.thread_state = (plcrash_async_thread_state_t)*next->value();
-            ferr = PLFRAME_ESUCCESS;
-        }
+        cursor->_list->set_reading(true); {
+            plcrash::async::async_list<plcrash_async_thread_state_t *>::node *next = NULL;
+            for (size_t i = 0; i < cursor->depth;i++) {
+                next = cursor->_list->next(next);
+            }
+            if (next->value() != NULL) {
+                frame.thread_state = (plcrash_async_thread_state_t)*next->value();
+                ferr = PLFRAME_ESUCCESS;
+            }
+        } cursor->_list->set_reading(false);
     } else {
         for (size_t i = 0; i < reader_count; i++) {
             ferr = readers[i](cursor->task, cursor->image_list, &cursor->frame, prev_frame, &frame);

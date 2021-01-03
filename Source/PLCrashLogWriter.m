@@ -1009,18 +1009,18 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
                 plcrash_async_thread_state_mach_thread_init(&cursor_thr_state, thread);
             }
 
-//            if (cursor_thr_state.cursor != NULL) {
-//                PLCF_DEBUG("using cursor from the context");
-//                cursor = *((plframe_cursor_t *)cursor_thr_state.cursor);
-//                PLCF_DEBUG("used cursor from the context");
-//            } else {
+            if (cursor_thr_state.cursor != NULL) {
+                PLCF_DEBUG("using cursor from the context");
+                cursor = *((plframe_cursor_t *)cursor_thr_state.cursor);
+                PLCF_DEBUG("used cursor from the context");
+            } else {
                 /* Initialize the cursor */
                 ferr = plframe_cursor_init(&cursor, task, &cursor_thr_state, image_list);
                 if (ferr != PLFRAME_ESUCCESS) {
                     PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
                     return rv;
                 }
-//            }
+            }
         }
 
         /* Walk the stack, limiting the total number of frames that are output. */

@@ -102,9 +102,7 @@ typedef struct plcrash_async_thread_state {
     /** Stack growth direction */
     plcrash_async_thread_stack_direction_t stack_direction;
     
-//    plframe_cursor_t cursor;
-//    
-//    bool hasCursor;
+    void *cursor;
     
     /** General purpose register size, in bytes */
     size_t greg_size;
