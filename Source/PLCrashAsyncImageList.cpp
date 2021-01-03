@@ -116,8 +116,6 @@ void plcrash_nasync_image_list_append (plcrash_async_image_list_t *list, pl_vm_a
         return;
     }
 
-    PLCF_DEBUG("Added to image list: %s", new_entry->macho_image.name);
-    PLCF_DEBUG("\t Added image header: 0x%" PRIx64, (uint64_t) header);
     /* Append */
     list->_list->nasync_append(new_entry);
 }
@@ -149,7 +147,6 @@ void plcrash_nasync_image_list_remove (plcrash_async_image_list_t *list, pl_vm_a
             return;
         }
 
-        PLCF_DEBUG("Remove from image list: %s", found->value()->macho_image.name);
         /* Delete the entry */
         list->_list->nasync_remove_node(found);
     } list->_list->set_reading(false);

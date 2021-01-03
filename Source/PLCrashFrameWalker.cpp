@@ -34,6 +34,7 @@
 #include "PLCrashFrameDWARFUnwind.h"
 
 #include "PLCrashFeatureConfig.h"
+#include <inttypes.h>
 
 #pragma mark Error Handling
 
@@ -64,6 +65,31 @@ const char *plframe_strerror (plframe_error_t error) {
     return "Unhandled error code";
 }
 
+plframe_error_t plframe_cursor_thread_state_recorded_at(plframe_cursor *cursor, size_t index, plcrash_async_thread_state *thread_state) {
+//    cursor->_list->set_reading(true); {
+//        plcrash::async::async_list<plframe_cursor_info>::node *next = NULL;
+//        for (size_t i = 0; i <= index;i++) {
+//            next = cursor->_list->next(next);
+//        }
+    plframe_cursor_info info = cursor->_list[index];
+    plcrash_async_thread_state_set_reg(thread_state, PLCRASH_REG_FP, info.fp);
+    plcrash_async_thread_state_set_reg(thread_state, PLCRASH_REG_IP, info.ip);
+    plcrash_async_thread_state_set_reg(thread_state, PLCRASH_REG_SP, info.sp);
+    memset(&thread_state->valid_regs, 0xFF, sizeof(thread_state->valid_regs));
+//        if (next != NULL) {
+////            *thread_state ;
+//            plframe_cursor_info info = next->value();
+////            plcrash_async_thread_state_clear_all_regs(thread_state);
+//
+    PLCF_DEBUG("Loading at index: %zu", index);
+            PLCF_DEBUG("\tLoading IP with value: 0x%" PRIx64, (uint64_t) info.ip);
+//        } else {
+//            return PLFRAME_INTERNAL;
+//        }
+//    } cursor->_list->set_reading(false);
+    return PLFRAME_ESUCCESS;
+}
+
 #pragma mark Frame Walking
 
 /**
@@ -78,7 +104,7 @@ static void plframe_cursor_internal_init (plframe_cursor_t *cursor, task_t task,
     cursor->depth = 0;
     cursor->task = task;
     cursor->image_list = image_list;
-    cursor->recorded = false;
+    cursor->_recorded = false;
     mach_port_mod_refs(mach_task_self(), cursor->task, MACH_PORT_RIGHT_SEND, 1);    
 }
 
@@ -101,29 +127,6 @@ plframe_error_t plframe_cursor_init (plframe_cursor_t *cursor, task_t task, plcr
     plcrash_async_memcpy(&cursor->frame.thread_state, thread_state, sizeof(cursor->frame.thread_state));
 
     return PLFRAME_ESUCCESS;
-}
-
-/**
- * Initialize the frame cursor using the provided thread state in recorded mode
- *
- * @param cursor Cursor record to be initialized.
- * @param task The task from which @a uap was derived. All memory will be mapped from this task.
- * @param thread_state The thread state to use for cursor initialization.
- * @param image_list The task's current image list. This is a borrowed reference, and must remain valid for the lifetime of the cursor.
- *
- * @return Returns PLFRAME_ESUCCESS on success, or standard plframe_error_t code if an error occurs.
- *
- * @warning Callers must call plframe_cursor_free() on @a cursor to free any associated resources, even if initialization
- * fails.
- */
-plframe_error_t plframe_cursor_init_recorded_mode (plframe_cursor_t *cursor, task_t task, plcrash_async_thread_state_t *thread_state, plcrash_async_image_list_t *image_list) {
-    plframe_error_t err = plframe_cursor_init(cursor, task, thread_state, image_list);
-    if (err != PLFRAME_ESUCCESS) {
-        return err;
-    }
-    cursor->_list = new plcrash::async::async_list<plcrash_async_thread_state_t *>();
-    cursor->recorded = true;
-    return err;
 }
 
 /**
@@ -159,6 +162,15 @@ plframe_error_t plframe_cursor_next_with_readers (plframe_cursor_t *cursor, plfr
     /* The first frame is already available via existing thread state. */
     if (cursor->depth == 0) {
         cursor->depth++;
+        if (cursor->_recorded) {
+            plcrash_async_thread_state thread_state;
+            plframe_error_t err = plframe_cursor_thread_state_recorded_at(cursor, 0, &thread_state);
+            if (err != PLFRAME_ESUCCESS) {
+                PLCF_DEBUG("No state has been recoreded");
+                return PLFRAME_EUNKNOWN;
+            }
+            plcrash_async_memcpy(&cursor->frame.thread_state, &thread_state, sizeof(cursor->frame.thread_state));
+        }
         return PLFRAME_ESUCCESS;
     }
     
@@ -171,18 +183,13 @@ plframe_error_t plframe_cursor_next_with_readers (plframe_cursor_t *cursor, plfr
     plframe_stackframe_t frame;
     plframe_error_t ferr = PLFRAME_EINVAL; // default return value if reader_count is 0.
     
-    if (cursor->recorded) {
-        cursor->_list->set_reading(true); {
-            plcrash::async::async_list<plcrash_async_thread_state_t *>::node *next = NULL;
-            for (size_t i = 0; i < cursor->depth;i++) {
-                next = cursor->_list->next(next);
-            }
-            if (next->value() != NULL) {
-                frame.thread_state = (plcrash_async_thread_state_t)*next->value();
-                ferr = PLFRAME_ESUCCESS;
-            }
-        } cursor->_list->set_reading(false);
+    if (cursor->_recorded) {
+        PLCF_DEBUG("Loading from recorded frames");
+        plcrash_async_thread_state_t thread_state;
+        ferr = plframe_cursor_thread_state_recorded_at(cursor, cursor->depth, &thread_state);
+        frame.thread_state = thread_state;
     } else {
+        PLCF_DEBUG("Reading new frames");
         for (size_t i = 0; i < reader_count; i++) {
             ferr = readers[i](cursor->task, cursor->image_list, &cursor->frame, prev_frame, &frame);
             if (ferr == PLFRAME_ESUCCESS)
@@ -273,8 +280,31 @@ size_t plframe_cursor_get_regcount (plframe_cursor_t *cursor) {
     return plcrash_async_thread_state_get_reg_count(&cursor->frame.thread_state);
 }
 
-void plframe_cursor_record (plframe_cursor_t *cursor, plcrash_async_thread_state_t *thread_state) {
-    cursor->_list->nasync_append(thread_state);
+void plframe_cursor_record (plframe_cursor_t *cursor, plcrash_async_thread_state_t thread_state) {
+//    if (cursor->_list == NULL) {
+//        PLCF_DEBUG("Trying to record in a cursor before _list is initialized, recording is canceled.");
+//        PLCF_ASSERT(false);
+//        return;
+//    }
+    struct plframe_cursor_info frame_info = {
+        .ip = plcrash_async_thread_state_get_reg(&thread_state, PLCRASH_REG_IP),
+        .sp = plcrash_async_thread_state_get_reg(&thread_state, PLCRASH_REG_SP),
+        .fp = plcrash_async_thread_state_get_reg(&thread_state, PLCRASH_REG_FP)
+    };
+    PLCF_DEBUG("Recording at index: %d", cursor->depth - 1);
+    PLCF_DEBUG("\tRecording IP with value: 0x%" PRIx64, (uint64_t) frame_info.ip);
+//    frame_info.pc = plcrash_async_thread_state_get_reg(&thread_state, PL)
+    cursor->_list[cursor->depth - 1] = frame_info;
+}
+
+void plframe_cursor_start_recording (plframe_cursor_t *cursor) {
+//    cursor->_list = new plcrash::async::async_list<plframe_cursor_info>();
+}
+
+void plframe_cursor_restart_recording (plframe_cursor_t *cursor) {
+    cursor->_recorded = true;
+//    cursor->_max_depth = cursor->depth;
+    cursor->depth = 0;
 }
 
 /**

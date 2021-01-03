@@ -60,9 +60,9 @@ static plcrash_error_t plcr_cpp_exception_callback(plcrash_async_thread_state_t 
     return PLCRASH_ESUCCESS;
 }
 
-static void plcrash_cpp_symbol_cb (pl_vm_address_t address, const char *name, void *ctx) {
-    PLCF_DEBUG("Frame: %s", name);
-}
+//static void plcrash_cpp_symbol_cb (pl_vm_address_t address, const char *name, void *ctx) {
+//    PLCF_DEBUG("Frame: %s", name);
+//}
 typedef void (*cxa_throw_type)(void*, std::type_info*, void (*)(void*));
 
 extern "C"
@@ -105,42 +105,44 @@ extern "C"
         }
         PLCF_DEBUG("Creating cursor to loop on all symbols");
         plframe_cursor_t cursor;
-        plframe_error_t ferr = plframe_cursor_init_recorded_mode(&cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
+        plframe_error_t ferr = plframe_cursor_init(&cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
         if (ferr != PLFRAME_ESUCCESS) {
             PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
         }
+        plframe_cursor_start_recording(&cursor);
         while ((ferr = plframe_cursor_next(&cursor)) == PLFRAME_ESUCCESS) {
             /* Fetch the PC value */
             plcrash_greg_t pc = 0;
-            plframe_cursor_record(&cursor, &cursor.frame.thread_state);
             if ((ferr = plframe_cursor_get_reg(&cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
                 PLCF_DEBUG("Could not retrieve frame PC register: %s", plframe_strerror(ferr));
                 break;
             } else {
                 PLCF_DEBUG("Next PC loaded: 0x%" PRIx64, (uint64_t) pc);
-                plcrash_greg_t fp = 0;
-                plframe_cursor_get_reg(&cursor, PLCRASH_REG_FP, &fp);
-                plcrash_greg_t sp = 0;
-                plframe_cursor_get_reg(&cursor, PLCRASH_REG_SP, &sp);
-                PLCF_DEBUG("Next FP loaded: 0x%" PRIx64, (uint64_t) fp);
-                PLCF_DEBUG("Next SP loaded: 0x%" PRIx64, (uint64_t) sp);
+//                plcrash_greg_t fp = 0;
+//                plframe_cursor_get_reg(&cursor, PLCRASH_REG_FP, &fp);
+//                plcrash_greg_t sp = 0;
+//                plframe_cursor_get_reg(&cursor, PLCRASH_REG_SP, &sp);
+//                PLCF_DEBUG("Next FP loaded: 0x%" PRIx64, (uint64_t) fp);
+//                PLCF_DEBUG("Next SP loaded: 0x%" PRIx64, (uint64_t) sp);
             }
+            plframe_cursor_record(&cursor, cursor.frame.thread_state);
 
-            plcrash_async_image_list_set_reading(&shared_image_list, true);
-            plcrash_async_image_t *image = plcrash_async_image_containing_address(&shared_image_list, (pl_vm_address_t) pc);
-
-            if (image != NULL) {
-                plcrash_error_t ret;
-                ret = plcrash_async_find_symbol(&image->macho_image, PLCRASH_ASYNC_SYMBOL_STRATEGY_ALL, &findContext, (pl_vm_address_t) pc, plcrash_cpp_symbol_cb, &ret);
-                if (ret != PLCRASH_ESUCCESS) {
-                    PLCF_DEBUG("Failed to get symbol: 0x%" PRIx64, (uint64_t) pc);
-                }
-            } else {
-                PLCF_DEBUG("Failed to get image of symbol: 0x%" PRIx64, (uint64_t) pc);
-            }
-            plcrash_async_image_list_set_reading(&shared_image_list, false);
+//            plcrash_async_image_list_set_reading(&shared_image_list, true);
+//            plcrash_async_image_t *image = plcrash_async_image_containing_address(&shared_image_list, (pl_vm_address_t) pc);
+//
+//            if (image != NULL) {
+//                plcrash_error_t ret;
+//                ret = plcrash_async_find_symbol(&image->macho_image, PLCRASH_ASYNC_SYMBOL_STRATEGY_ALL, &findContext, (pl_vm_address_t) pc, plcrash_cpp_symbol_cb, &ret);
+//                if (ret != PLCRASH_ESUCCESS) {
+//                    PLCF_DEBUG("Failed to get symbol: 0x%" PRIx64, (uint64_t) pc);
+//                }
+//            } else {
+//                PLCF_DEBUG("Failed to get image of symbol: 0x%" PRIx64, (uint64_t) pc);
+//            }
+//            plcrash_async_image_list_set_reading(&shared_image_list, false);
         }
-
+        
+        plframe_cursor_restart_recording(&cursor);
         pl_cpp_thread_state_final.cursor = &cursor;
         PLCF_DEBUG("finished looping on all symbols");
 

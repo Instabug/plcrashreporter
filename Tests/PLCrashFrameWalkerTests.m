@@ -128,6 +128,42 @@ static plframe_error_t esuccess_reader (task_t task,
     
 }
 
+- (void)testRecording {
+    plframe_cursor_t cursor;
+    
+    /* Initialize the cursor */
+    STAssertEquals(PLFRAME_ESUCCESS, plframe_cursor_thread_init(&cursor, mach_task_self(), pthread_mach_thread_np(_thr_args.thread), &_image_list), @"Initialization failed");
+
+    plcrash_greg_t first_loop[250] = { 0 };
+    size_t first_loop_counter = 0;
+    plframe_error_t ferr;
+
+    plframe_cursor_start_recording(&cursor);
+    while ((ferr = plframe_cursor_next(&cursor)) == PLFRAME_ESUCCESS) {
+        plcrash_greg_t pc = 0;
+        if ((ferr = plframe_cursor_get_reg(&cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
+            break;
+        }
+        plframe_cursor_record(&cursor, cursor.frame.thread_state);
+        first_loop[first_loop_counter] = pc;
+        first_loop_counter++;
+    }
+    plframe_cursor_restart_recording(&cursor);
+
+    size_t second_loop_counter = 0;
+    while ((ferr = plframe_cursor_next(&cursor)) == PLFRAME_ESUCCESS) {
+        plcrash_greg_t pc = 0;
+        if ((ferr = plframe_cursor_get_reg(&cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
+            break;
+        }
+        STAssertEquals(first_loop[second_loop_counter], pc, "Second run doesn't match first run");
+        second_loop_counter++;
+    }
+    STAssertEquals(first_loop_counter, second_loop_counter, "Loops lengths doesn't match");
+    
+    plframe_cursor_free(&cursor);
+}
+
 /*
  * Perform stack walking regression tests.
  */
