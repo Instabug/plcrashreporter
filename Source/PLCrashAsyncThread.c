@@ -218,7 +218,6 @@ plcrash_error_t plcrash_async_thread_state_mach_thread_init (plcrash_async_threa
 
     /* Mark all registers as available */
     memset(&thread_state->valid_regs, 0xFF, sizeof(thread_state->valid_regs));
-    thread_state->cursor = NULL;
 
     return PLCRASH_ESUCCESS;
 }

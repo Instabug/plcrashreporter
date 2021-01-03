@@ -325,7 +325,6 @@
     
     /* Spawn a test thread */
     thr = pthread_mach_thread_np(_thr_args.thread);
-    thr = pl_mach_thread_self();
     thread_suspend(thr);
 
     /* Fetch the thread state */

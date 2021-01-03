@@ -240,9 +240,6 @@ plframe_error_t plframe_cursor_read_dwarf_unwind (task_t task,
         PLCF_DEBUG("Could not find a loaded image for the current frame pc: 0x%" PRIx64, (uint64_t) pc);
         plcrash_async_image_list_set_reading(image_list, false);
         return PLFRAME_ENOTSUP;
-    } else {
-        PLCF_DEBUG("Found a loaded image for the current frame pc: 0x%" PRIx64, (uint64_t) pc);
-        PLCF_DEBUG("\tFound in image: %s", image->macho_image.name);
     }
     
     /* Perform the actual read */

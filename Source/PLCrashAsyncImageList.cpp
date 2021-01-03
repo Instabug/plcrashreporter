@@ -33,7 +33,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include <inttypes.h>
 
 plcrash_async_image_list_t shared_image_list;
 
