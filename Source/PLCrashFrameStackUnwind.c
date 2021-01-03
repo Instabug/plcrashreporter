@@ -28,6 +28,7 @@
 
 #include "PLCrashFrameStackUnwind.h"
 #include "PLCrashAsync.h"
+#include <inttypes.h>
 
 /**
  * Fetch the next frame, assuming a valid frame pointer in @a cursor's current frame.
@@ -47,6 +48,7 @@ plframe_error_t plframe_cursor_read_frame_ptr (task_t task,
 {
     /* Determine the appropriate type width for the target thread */
     bool x64 = plcrash_async_thread_state_get_greg_size(&current_frame->thread_state) == sizeof(uint64_t);
+    PLCF_DEBUG("Is x86: %d", x64);
     union {
         uint64_t greg64[2];
         uint32_t greg32[2];
@@ -70,6 +72,7 @@ plframe_error_t plframe_cursor_read_frame_ptr (task_t task,
 
     /* Fetch the current frame's frame pointer */
     plcrash_greg_t fp = plcrash_async_thread_state_get_reg(&current_frame->thread_state, PLCRASH_REG_FP);
+    PLCF_DEBUG("fp: 0x%" PRIx64, (uint64_t) fp);
     
     /* A NULL FP means a terminated frame */
     if (fp == 0x0)

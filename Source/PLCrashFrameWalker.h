@@ -141,6 +141,16 @@ typedef struct plframe_cursor {
 
     /** The current stack frame data */
     plframe_stackframe_t frame;
+
+    /** The flag to determine if recorded mode is active  */
+    bool recorded;
+    
+    /** The recording list when in recorded mode */
+#ifdef __cplusplus
+    plcrash::async::async_list<plcrash_async_thread_state_t *> *_list;
+#else
+    void *_list;
+#endif
 } plframe_cursor_t;
 
 /**
@@ -163,6 +173,7 @@ typedef plframe_error_t plframe_cursor_frame_reader_t (task_t task,
 const char *plframe_strerror (plframe_error_t error);
 
 plframe_error_t plframe_cursor_init (plframe_cursor_t *cursor, task_t task, plcrash_async_thread_state_t *thread_state, plcrash_async_image_list_t *image_list);
+plframe_error_t plframe_cursor_init_recorded_mode (plframe_cursor_t *cursor, task_t task, plcrash_async_thread_state_t *thread_state, plcrash_async_image_list_t *image_list);
 plframe_error_t plframe_cursor_thread_init (plframe_cursor_t *cursor, task_t task, thread_t thread, plcrash_async_image_list_t *image_list);
 
 char const *plframe_cursor_get_regname (plframe_cursor_t *cursor, plcrash_regnum_t regnum);
@@ -171,6 +182,7 @@ plframe_error_t plframe_cursor_get_reg (plframe_cursor_t *cursor, plcrash_regnum
 
 plframe_error_t plframe_cursor_next (plframe_cursor_t *cursor);
 plframe_error_t plframe_cursor_next_with_readers (plframe_cursor_t *cursor, plframe_cursor_frame_reader_t *readers[], size_t reader_count);
+void plframe_cursor_record (plframe_cursor_t *cursor, plcrash_async_thread_state_t *thread_state);
 
 void plframe_cursor_free(plframe_cursor_t *cursor);
 

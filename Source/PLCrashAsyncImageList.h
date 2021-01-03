@@ -96,6 +96,13 @@ void plcrash_async_image_list_set_reading (plcrash_async_image_list_t *list, boo
 plcrash_async_image_t *plcrash_async_image_containing_address (plcrash_async_image_list_t *list, pl_vm_address_t address);
 plcrash_async_image_t *plcrash_async_image_list_next (plcrash_async_image_list_t *list, plcrash_async_image_t *current);
     
+
+/**
+ * @internal
+ *
+ * Shared dyld image list.
+ */
+extern plcrash_async_image_list_t shared_image_list;
 #ifdef __cplusplus
 }
 #endif

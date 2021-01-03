@@ -133,14 +133,14 @@ typedef int64_t pl_vm_off_t;
 
 // Debug output support. Lines are capped at 128 (stack space is scarce). This implemention
 // is not async-safe and should not be enabled in release builds
-#ifdef PLCF_RELEASE_BUILD
-
-#define PLCF_DEBUG(msg, args...)
-
-#else
+//#ifdef PLCF_RELEASE_BUILD
+//
+//#define PLCF_DEBUG(msg, args...) asdas
+//
+//#else
 
 #define PLCF_DEBUG(msg, args...) {\
-    char __tmp_output[128];\
+    char __tmp_output[256];\
     snprintf(__tmp_output, sizeof(__tmp_output), "[PLCrashReporter] "); \
     plcrash_async_writen(STDERR_FILENO, __tmp_output, strlen(__tmp_output));\
     \
@@ -155,7 +155,7 @@ typedef int64_t pl_vm_off_t;
     plcrash_async_writen(STDERR_FILENO, __tmp_output, 1); \
 }
 
-#endif /* PLCF_RELEASE_BUILD */
+//#endif /* PLCF_RELEASE_BUILD */
 
 
 /**

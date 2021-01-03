@@ -1002,17 +1002,25 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
              * from the target thread's state. */
             plcrash_async_thread_state_t cursor_thr_state;
             if (thread_ctx) {
+                PLCF_DEBUG("Using thread context instead of creating new one from thread");
                 cursor_thr_state = *thread_ctx;
             } else {
+                PLCF_DEBUG("Creating thread context");
                 plcrash_async_thread_state_mach_thread_init(&cursor_thr_state, thread);
             }
 
-            /* Initialize the cursor */
-            ferr = plframe_cursor_init(&cursor, task, &cursor_thr_state, image_list);
-            if (ferr != PLFRAME_ESUCCESS) {
-                PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
-                return rv;
-            }
+//            if (cursor_thr_state.cursor != NULL) {
+//                PLCF_DEBUG("using cursor from the context");
+//                cursor = *((plframe_cursor_t *)cursor_thr_state.cursor);
+//                PLCF_DEBUG("used cursor from the context");
+//            } else {
+                /* Initialize the cursor */
+                ferr = plframe_cursor_init(&cursor, task, &cursor_thr_state, image_list);
+                if (ferr != PLFRAME_ESUCCESS) {
+                    PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
+                    return rv;
+                }
+//            }
         }
 
         /* Walk the stack, limiting the total number of frames that are output. */
@@ -1030,6 +1038,14 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
             if ((ferr = plframe_cursor_get_reg(&cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
                 PLCF_DEBUG("Could not retrieve frame PC register: %s", plframe_strerror(ferr));
                 break;
+            } else {
+                PLCF_DEBUG("Next -> PC at __cxa_throw: 0x%" PRIx64, (uint64_t) pc);
+                plcrash_greg_t fp = 0;
+                plframe_cursor_get_reg(&cursor, PLCRASH_REG_FP, &fp);
+                plcrash_greg_t sp = 0;
+                plframe_cursor_get_reg(&cursor, PLCRASH_REG_SP, &sp);
+                PLCF_DEBUG("Next -> FP at __cxa_throw: 0x%" PRIx64, (uint64_t) fp);
+                PLCF_DEBUG("Next -> SP at __cxa_throw: 0x%" PRIx64, (uint64_t) sp);
             }
 
             /* Determine the size */
@@ -1386,9 +1402,11 @@ plcrash_error_t plcrash_log_writer_write (plcrash_log_writer_t *writer,
         /* If executing on the target thread, we need to a valid context to walk */
         if (pl_mach_thread_self() == thread) {
             /* Can't log a report for the current thread without a valid context. */
-            if (current_state == NULL)
+            if (current_state == NULL){
+                PLCF_DEBUG("YH: current state is nil");
                 continue;
-        
+            }
+            PLCF_DEBUG("YH: Using current thread instead of thread");
             thr_ctx = current_state;
         }
         

@@ -11,11 +11,13 @@
 #include <stdio.h>
 
 #include "PLCrashMacros.h"
-#include "PLCrashLogWriter.h"
+extern plcrash_async_thread_state_t pl_cpp_thread_state;
+extern plcrash_async_thread_state_t pl_cpp_thread_state_final;
 
 PLCR_C_BEGIN_DECLS
 
-void setCPPExceptionHandler(plcrash_log_writer_t *targetWriter);
+//void setCPPExceptionHandler(plcrash_log_writer_t *targetWriter);
+void setCPPExceptionHandler(void);
 
 PLCR_C_END_DECLS
 

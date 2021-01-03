@@ -103,6 +103,29 @@ plframe_error_t plframe_cursor_init (plframe_cursor_t *cursor, task_t task, plcr
 }
 
 /**
+ * Initialize the frame cursor using the provided thread state in recorded mode
+ *
+ * @param cursor Cursor record to be initialized.
+ * @param task The task from which @a uap was derived. All memory will be mapped from this task.
+ * @param thread_state The thread state to use for cursor initialization.
+ * @param image_list The task's current image list. This is a borrowed reference, and must remain valid for the lifetime of the cursor.
+ *
+ * @return Returns PLFRAME_ESUCCESS on success, or standard plframe_error_t code if an error occurs.
+ *
+ * @warning Callers must call plframe_cursor_free() on @a cursor to free any associated resources, even if initialization
+ * fails.
+ */
+plframe_error_t plframe_cursor_init_recorded_mode (plframe_cursor_t *cursor, task_t task, plcrash_async_thread_state_t *thread_state, plcrash_async_image_list_t *image_list) {
+    plframe_error_t err = plframe_cursor_init(cursor, task, thread_state, image_list);
+    if (err != PLFRAME_ESUCCESS) {
+        return err;
+    }
+    cursor->_list = new plcrash::async::async_list<plcrash_async_thread_state_t *>();
+    cursor->recorded = true;
+    return err;
+}
+
+/**
  * Initialize the frame cursor by acquiring state from the provided mach thread. If the thread is not suspended,
  * the fetched state may be inconsistent.
  *
@@ -147,10 +170,21 @@ plframe_error_t plframe_cursor_next_with_readers (plframe_cursor_t *cursor, plfr
     plframe_stackframe_t frame;
     plframe_error_t ferr = PLFRAME_EINVAL; // default return value if reader_count is 0.
     
-    for (size_t i = 0; i < reader_count; i++) {
-        ferr = readers[i](cursor->task, cursor->image_list, &cursor->frame, prev_frame, &frame);
-        if (ferr == PLFRAME_ESUCCESS)
-            break;
+    if (cursor->recorded) {
+        plcrash::async::async_list<plcrash_async_thread_state_t *>::node *next = NULL;
+        for (size_t i = 0; i < cursor->depth;i++) {
+            next = cursor->_list->next(next);
+        }
+        if (next->value() != NULL) {
+            frame.thread_state = (plcrash_async_thread_state_t)*next->value();
+            ferr = PLFRAME_ESUCCESS;
+        }
+    } else {
+        for (size_t i = 0; i < reader_count; i++) {
+            ferr = readers[i](cursor->task, cursor->image_list, &cursor->frame, prev_frame, &frame);
+            if (ferr == PLFRAME_ESUCCESS)
+                break;
+        }
     }
     
     if (ferr != PLFRAME_ESUCCESS) {
@@ -234,6 +268,10 @@ char const *plframe_cursor_get_regname (plframe_cursor_t *cursor, plcrash_regnum
  */
 size_t plframe_cursor_get_regcount (plframe_cursor_t *cursor) {
     return plcrash_async_thread_state_get_reg_count(&cursor->frame.thread_state);
+}
+
+void plframe_cursor_record (plframe_cursor_t *cursor, plcrash_async_thread_state_t *thread_state) {
+    cursor->_list->nasync_append(thread_state);
 }
 
 /**

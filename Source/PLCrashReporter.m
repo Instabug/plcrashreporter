@@ -112,13 +112,6 @@ typedef struct signal_handler_ctx {
 #endif /* PLCRASH_FEATURE_MACH_EXCEPTIONS */
 } plcrashreporter_handler_ctx_t;
 
-/**
- * @internal
- *
- * Shared dyld image list.
- */
-static plcrash_async_image_list_t shared_image_list;
-
 
 /**
  * @internal
@@ -194,6 +187,7 @@ static plcrash_error_t plcrash_write_report (plcrashreporter_handler_ctx_t *sigc
  * Signal handler callback.
  */
 static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t *uap, void *context, PLCrashSignalHandlerCallback *next) {
+    PLCF_DEBUG("Signal Handler");
     plcrashreporter_handler_ctx_t *sigctx = context;
     plcrash_async_thread_state_t thread_state;
     plcrash_log_signal_info_t signal_info;
@@ -220,7 +214,13 @@ static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t 
     }
 
     /* Extract the thread state */
-    plcrash_async_thread_state_mcontext_init(&thread_state, uap->uc_mcontext);
+//    if (pl_cpp_thread_state != NULL) {
+        PLCF_DEBUG("Used CPP state thread");
+        thread_state = pl_cpp_thread_state_final;
+//    } else {
+//        PLCF_DEBUG("CPP state thread context was invalid");
+//        plcrash_async_thread_state_mcontext_init(&thread_state, uap->uc_mcontext);
+//    }
     
     /* Set up the BSD signal info */
     bsd_signal_info.signo = info->si_signo;
@@ -231,13 +231,17 @@ static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t 
     signal_info.mach_info = NULL;
 
     /* Write the report */
-    if (plcrash_write_report(sigctx, pl_mach_thread_self(), &thread_state, &signal_info) != PLCRASH_ESUCCESS)
+    if (plcrash_write_report(sigctx, pl_mach_thread_self(), &thread_state, &signal_info) != PLCRASH_ESUCCESS) {
+        PLCF_DEBUG("End Signal Handler");
         return false;
+    }
 
     /* Call any post-crash callback */
-    if (crashCallbacks.handleSignal != NULL)
+    if (crashCallbacks.handleSignal != NULL) {
         crashCallbacks.handleSignal(info, uap, crashCallbacks.context);
-    
+    }
+
+    PLCF_DEBUG("End Signal Handler");
     return false;
 }
 
@@ -255,6 +259,7 @@ static plcrash_error_t mach_exception_callback_live_cb (plcrash_async_thread_sta
 }
 
 static kern_return_t mach_exception_callback (task_t task, thread_t thread, exception_type_t exception_type, mach_exception_data_t code, mach_msg_type_number_t code_count, void *context) {
+    PLCF_DEBUG("Mach exception handler");
     plcrashreporter_handler_ctx_t *sigctx = context;
     plcrash_log_signal_info_t signal_info;
     plcrash_log_bsd_signal_info_t bsd_signal_info;
@@ -316,6 +321,7 @@ static kern_return_t mach_exception_callback (task_t task, thread_t thread, exce
         crashCallbacks.handleSignal(&si, &uctx, crashCallbacks.context);
     }
 
+    PLCF_DEBUG("End Mach exception Handler");
     return KERN_FAILURE;
 }
 #endif /* PLCRASH_FEATURE_MACH_EXCEPTIONS */
@@ -557,6 +563,7 @@ static PLCrashReporter *sharedReporter = nil;
      * well as our legacy approach of deregistering any signal handlers upon the first signal. Once PLCrashUncaughtExceptionHandler is
      * implemented, and we support double-fault handling without resetting the signal handlers, we can support chaining of multiple
      * crash reporters. */
+    PLCF_DEBUG("AHOOOH WORKINGGG");
     {
         static BOOL enforceOne = NO;
         pthread_mutex_t enforceOneLock = PTHREAD_MUTEX_INITIALIZER;
@@ -642,7 +649,8 @@ static PLCrashReporter *sharedReporter = nil;
     if(_config.shouldRegisterUncaughtExceptionHandler) {
         PLCF_DEBUG("YH: Registering for excpetions...")
       NSSetUncaughtExceptionHandler(&uncaught_exception_handler);
-        setCPPExceptionHandler(&signal_handler_context.writer);
+//        setCPPExceptionHandler(&signal_handler_context.writer);
+      setCPPExceptionHandler();
     }
   
     /* Success */
