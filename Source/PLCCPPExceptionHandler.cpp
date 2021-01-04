@@ -14,16 +14,16 @@
 #include <dlfcn.h>
 #include "PLCrashMacros.h"
 #include <pthread.h>
-#include "PLCrashFrameWalker.h"
 #include <inttypes.h>
 #include "PLCrashAsyncSymbolication.h"
 #include "PLCrashAsyncImageList.h"
+#include "PLCrashMacros.h"
 
-
-//static plcrash_log_writer_t *writer;
+static plcrash_log_writer_t *writer;
 //static bool calledOnce = false;
 //plcrash_async_thread_state_t pl_cpp_thread_state;
-plcrash_async_thread_state_t pl_cpp_thread_state_final;
+static plcrash_async_thread_state_t pl_cpp_thread_state_final;
+plframe_cursor_t pl_cpp_cursor;
 
 static std::terminate_handler originalHandler;
 
@@ -85,16 +85,15 @@ extern "C"
             PLCF_DEBUG("Couldn't create error: %s", plcrash_async_strerror(err));
         }
         PLCF_DEBUG("Creating cursor to loop on all symbols");
-        plframe_cursor_t cursor;
-        plframe_error_t ferr = plframe_cursor_init(&cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
+        plframe_error_t ferr = plframe_cursor_init(&pl_cpp_cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
         if (ferr != PLFRAME_ESUCCESS) {
             PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
         }
-        plframe_cursor_start_recording(&cursor);
-        while ((ferr = plframe_cursor_next(&cursor)) == PLFRAME_ESUCCESS) {
+        plframe_cursor_start_recording(&pl_cpp_cursor);
+        while ((ferr = plframe_cursor_next(&pl_cpp_cursor)) == PLFRAME_ESUCCESS) {
             /* Fetch the PC value */
             plcrash_greg_t pc = 0;
-            if ((ferr = plframe_cursor_get_reg(&cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
+            if ((ferr = plframe_cursor_get_reg(&pl_cpp_cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
                 PLCF_DEBUG("Could not retrieve frame PC register: %s", plframe_strerror(ferr));
                 break;
             } else {
@@ -106,7 +105,7 @@ extern "C"
 //                PLCF_DEBUG("Next FP loaded: 0x%" PRIx64, (uint64_t) fp);
 //                PLCF_DEBUG("Next SP loaded: 0x%" PRIx64, (uint64_t) sp);
             }
-            plframe_cursor_record(&cursor, cursor.frame.thread_state);
+            plframe_cursor_record(&pl_cpp_cursor, pl_cpp_cursor.frame.thread_state);
 
 //            plcrash_async_image_list_set_reading(&shared_image_list, true);
 //            plcrash_async_image_t *image = plcrash_async_image_containing_address(&shared_image_list, (pl_vm_address_t) pc);
@@ -123,9 +122,9 @@ extern "C"
 //            plcrash_async_image_list_set_reading(&shared_image_list, false);
         }
         
-        plframe_cursor_restart_recording(&cursor);
-        pl_cpp_thread_state_final.cursor = &cursor;
-        PLCF_DEBUG("finished looping on all symbols");
+        plframe_cursor_restart_recording(&pl_cpp_cursor);
+        pl_cpp_thread_state_final.cursor = &pl_cpp_cursor;
+        PLCF_DEBUG("finished looping on all symbols, cursor: (%p)", pl_cpp_thread_state_final.cursor);
 
         /* Did we reach the end successfully? */
 //        if (ferr != PLFRAME_ENOFRAME) {
@@ -295,15 +294,17 @@ static void PLCCPPTerminateHandler(void) {
     }
     if(name == NULL || strcmp(name, "NSException") != 0) {
         PLCF_DEBUG("Rethrow exception");
-//        try
-//        {
-//            throw;
-//        }
-//        catch(std::exception& exc)
-//        {
-//            PLCF_DEBUG("caught exception");
-//    //        strncpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
-//        }
+        try
+        {
+            throw;
+        }
+        catch(std::exception& exc)
+        {
+            PLCF_DEBUG("caught exception");
+            writer->
+            exc.what();
+    //        strncpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
+        }
     } else {
         PLCF_DEBUG("Captured NSException, let NSException handler handle it ");
     }

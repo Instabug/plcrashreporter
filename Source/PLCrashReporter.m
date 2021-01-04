@@ -142,7 +142,7 @@ static PLCrashReporterCallbacks crashCallbacks = {
  *
  * @return Returns PLCRASH_ESUCCESS on success, or an appropriate error value if the report could not be written.
  */
-static plcrash_error_t plcrash_write_report (plcrashreporter_handler_ctx_t *sigctx, thread_t crashed_thread, plcrash_async_thread_state_t *thread_state, plcrash_log_signal_info_t *siginfo) {
+static plcrash_error_t plcrash_write_report (plcrashreporter_handler_ctx_t *sigctx, thread_t crashed_thread, plcrash_async_thread_state_t *thread_state, plcrash_log_signal_info_t *siginfo, plframe_cursor_t *cursor) {
     plcrash_async_file_t file;
     plcrash_error_t err;
 
@@ -157,7 +157,7 @@ static plcrash_error_t plcrash_write_report (plcrashreporter_handler_ctx_t *sigc
     plcrash_async_file_init(&file, fd, MAX_REPORT_BYTES);
     
     /* Write the crash log using the already-initialized writer */
-    err = plcrash_log_writer_write(&sigctx->writer, crashed_thread, &shared_image_list, &file, siginfo, thread_state);
+    err = plcrash_log_writer_write(&sigctx->writer, crashed_thread, &shared_image_list, &file, siginfo, thread_state, cursor);
 
     /* Close the writer; this may also fail (but shouldn't) */
     if (plcrash_log_writer_close(&sigctx->writer) != PLCRASH_ESUCCESS) {
@@ -215,11 +215,11 @@ static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t 
 
     /* Extract the thread state */
 //    if (pl_cpp_thread_state != NULL) {
-        PLCF_DEBUG("Used CPP state thread");
-        thread_state = pl_cpp_thread_state_final;
+//        PLCF_DEBUG("Used CPP state thread");
+//        thread_state = pl_cpp_thread_state_final;
 //    } else {
 //        PLCF_DEBUG("CPP state thread context was invalid");
-//        plcrash_async_thread_state_mcontext_init(&thread_state, uap->uc_mcontext);
+        plcrash_async_thread_state_mcontext_init(&thread_state, uap->uc_mcontext);
 //    }
     
     /* Set up the BSD signal info */
@@ -231,7 +231,7 @@ static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t 
     signal_info.mach_info = NULL;
 
     /* Write the report */
-    if (plcrash_write_report(sigctx, pl_mach_thread_self(), &thread_state, &signal_info) != PLCRASH_ESUCCESS) {
+    if (plcrash_write_report(sigctx, pl_mach_thread_self(), &thread_state, &signal_info, &pl_cpp_cursor) != PLCRASH_ESUCCESS) {
         PLCF_DEBUG("End Signal Handler");
         return false;
     }
@@ -255,7 +255,7 @@ struct mach_exception_callback_live_cb_ctx {
 
 static plcrash_error_t mach_exception_callback_live_cb (plcrash_async_thread_state_t *state, void *ctx) {
     struct mach_exception_callback_live_cb_ctx *plcr_ctx = ctx;
-    return plcrash_write_report(plcr_ctx->sigctx, plcr_ctx->crashed_thread, state, plcr_ctx->siginfo);
+    return plcrash_write_report(plcr_ctx->sigctx, plcr_ctx->crashed_thread, state, plcr_ctx->siginfo, NULL);
 }
 
 static kern_return_t mach_exception_callback (task_t task, thread_t thread, exception_type_t exception_type, mach_exception_data_t code, mach_msg_type_number_t code_count, void *context) {
@@ -682,7 +682,7 @@ struct plcr_live_report_context {
 };
 static plcrash_error_t plcr_live_report_callback (plcrash_async_thread_state_t *state, void *ctx) {
     struct plcr_live_report_context *plcr_ctx = ctx;
-    return plcrash_log_writer_write(plcr_ctx->writer, pl_mach_thread_self(), &shared_image_list, plcr_ctx->file, plcr_ctx->info, state);
+    return plcrash_log_writer_write(plcr_ctx->writer, pl_mach_thread_self(), &shared_image_list, plcr_ctx->file, plcr_ctx->info, state, NULL);
 }
 
 
@@ -746,7 +746,7 @@ static plcrash_error_t plcr_live_report_callback (plcrash_async_thread_state_t *
         };
         err = plcrash_async_thread_state_current(plcr_live_report_callback, &ctx);
     } else {
-        err = plcrash_log_writer_write(&writer, thread, &shared_image_list, &file, &signal_info, NULL);
+        err = plcrash_log_writer_write(&writer, thread, &shared_image_list, &file, &signal_info, NULL, NULL);
     }
     plcrash_log_writer_close(&writer);
 

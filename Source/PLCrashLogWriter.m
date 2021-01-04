@@ -974,6 +974,7 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
                                            thread_t thread,
                                            uint32_t thread_number,
                                            plcrash_async_thread_state_t *thread_ctx,
+                                           plframe_cursor_t *recorded_cursor,
                                            plcrash_async_image_list_t *image_list,
                                            plcrash_async_symbol_cache_t *findContext,
                                            bool crashed)
@@ -1003,26 +1004,22 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
             /* Use the provided context if available, otherwise initialize a new thread context
              * from the target thread's state. */
             plcrash_async_thread_state_t cursor_thr_state;
-            if (thread_ctx) {
-                PLCF_DEBUG("Using thread context instead of creating new one from thread");
-                cursor_thr_state = *thread_ctx;
-                PLCF_DEBUG("using cursor from the context");
-                cursor = *((plframe_cursor_t *)cursor_thr_state.cursor);
-//                plframe_cursor_restart_recording(&cursor);
-                PLCF_DEBUG("used cursor from the context");
+            if (recorded_cursor != NULL) {
+                PLCF_DEBUG("Write thread: using recorded cursor");
+                cursor = *recorded_cursor;
             } else {
-                PLCF_DEBUG("Creating thread context");
-                plcrash_async_thread_state_mach_thread_init(&cursor_thr_state, thread);
+                if (thread_ctx != NULL) {
+                    PLCF_DEBUG("Using passed thread context");
+                    cursor_thr_state = *thread_ctx;
+                } else {
+                    PLCF_DEBUG("Creating thread context");
+                    plcrash_async_thread_state_mach_thread_init(&cursor_thr_state, thread);
+                }
                 ferr = plframe_cursor_init(&cursor, task, &cursor_thr_state, image_list);
                 if (ferr != PLFRAME_ESUCCESS) {
                     PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
                     return rv;
                 }
-            }
-
-            if (cursor_thr_state.cursor != NULL) {
-            } else {
-                /* Initialize the cursor */
             }
         }
 
@@ -1283,7 +1280,8 @@ plcrash_error_t plcrash_log_writer_write (plcrash_log_writer_t *writer,
                                           plcrash_async_image_list_t *image_list,
                                           plcrash_async_file_t *file,
                                           plcrash_log_signal_info_t *siginfo,
-                                          plcrash_async_thread_state_t *current_state)
+                                          plcrash_async_thread_state_t *current_state,
+                                          plframe_cursor_t *cursor)
 {
     thread_act_array_t threads;
     mach_msg_type_number_t thread_count;
@@ -1399,18 +1397,23 @@ plcrash_error_t plcrash_log_writer_write (plcrash_log_writer_t *writer,
     for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
         thread_t thread = threads[i];
         plcrash_async_thread_state_t *thr_ctx = NULL;
+        plframe_cursor_t *recorded_cursor = NULL;
         bool crashed = false;
         uint32_t size;
 
         /* If executing on the target thread, we need to a valid context to walk */
         if (pl_mach_thread_self() == thread) {
-            /* Can't log a report for the current thread without a valid context. */
-            if (current_state == NULL){
+            /* Can't log a report for the current thread without a recorded cursor or a valid context. */
+            if (cursor != NULL) {
+                PLCF_DEBUG("YH: Using recorded cursor");
+                recorded_cursor = cursor;
+            } else if (current_state != NULL) {
+                PLCF_DEBUG("YH: Using current thread instead of thread");
+                thr_ctx = current_state;
+            } else {
                 PLCF_DEBUG("YH: current state is nil");
                 continue;
             }
-            PLCF_DEBUG("YH: Using current thread instead of thread");
-            thr_ctx = current_state;
         }
         
         /* Check if this is the crashed thread */
@@ -1419,11 +1422,11 @@ plcrash_error_t plcrash_log_writer_write (plcrash_log_writer_t *writer,
         }
 
         /* Determine the size */
-        size = (uint32_t) plcrash_writer_write_thread(NULL, writer, mach_task_self(), thread, thread_number, thr_ctx, image_list, &findContext, crashed);
+        size = (uint32_t) plcrash_writer_write_thread(NULL, writer, mach_task_self(), thread, thread_number, thr_ctx, recorded_cursor, image_list, &findContext, crashed);
 
         /* Write message */
         plcrash_writer_pack(file, PLCRASH_PROTO_THREADS_ID, PLPROTOBUF_C_TYPE_MESSAGE, &size);
-        plcrash_writer_write_thread(file, writer, mach_task_self(), thread, thread_number, thr_ctx, image_list, &findContext, crashed);
+        plcrash_writer_write_thread(file, writer, mach_task_self(), thread, thread_number, thr_ctx, recorded_cursor, image_list, &findContext, crashed);
 
         thread_number++;
     }

@@ -384,7 +384,7 @@
     plcrash_log_writer_set_custom_data(&writer, [@"DummyInfo" dataUsingEncoding:NSUTF8StringEncoding]);
 
     /* Write the crash report */
-    STAssertEquals(PLCRASH_ESUCCESS, plcrash_log_writer_write(&writer, thread, &image_list, &file, &info, &thread_state), @"Crash log failed");
+    STAssertEquals(PLCRASH_ESUCCESS, plcrash_log_writer_write(&writer, thread, &image_list, &file, &info, &thread_state, NULL), @"Crash log failed");
 
     /* Close it */
     plcrash_log_writer_close(&writer);

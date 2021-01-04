@@ -158,7 +158,7 @@ typedef struct plframe_cursor {
     
     /** The recording list when in recorded mode */
 //#ifdef __cplusplus
-    struct plframe_cursor_info _list[250];
+    plcrash_async_thread_state_t *_list;
 //#else
 //    void *_list;
 //#endif

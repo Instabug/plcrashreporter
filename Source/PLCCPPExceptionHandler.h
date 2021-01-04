@@ -9,10 +9,10 @@
 #define PLC_CPP_EXCEPTION_HANDLER_h
 
 #include <stdio.h>
+#include "PLCrashFrameWalker.h"
+#import "PLCrashLogWriter.h"
 
-#include "PLCrashMacros.h"
-//extern plcrash_async_thread_state_t pl_cpp_thread_state;
-extern plcrash_async_thread_state_t pl_cpp_thread_state_final;
+extern plframe_cursor_t pl_cpp_cursor;
 
 PLCR_C_BEGIN_DECLS
 
