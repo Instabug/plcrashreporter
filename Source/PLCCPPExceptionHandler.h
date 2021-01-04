@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 #include "PLCrashMacros.h"
-extern plcrash_async_thread_state_t pl_cpp_thread_state;
+//extern plcrash_async_thread_state_t pl_cpp_thread_state;
 extern plcrash_async_thread_state_t pl_cpp_thread_state_final;
 
 PLCR_C_BEGIN_DECLS

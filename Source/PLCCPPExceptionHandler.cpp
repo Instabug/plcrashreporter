@@ -22,29 +22,10 @@
 
 //static plcrash_log_writer_t *writer;
 //static bool calledOnce = false;
-plcrash_async_thread_state_t pl_cpp_thread_state;
+//plcrash_async_thread_state_t pl_cpp_thread_state;
 plcrash_async_thread_state_t pl_cpp_thread_state_final;
 
 static std::terminate_handler originalHandler;
-
-void *initializeThreadContext(void *originalThread) {
-    thread_t thr = *((thread_t *)originalThread);
-    PLCF_DEBUG("Starting deteched thread work");
-    PLCF_DEBUG("Suspending original thread");
-    if (thr == pl_mach_thread_self()) {
-        PLCF_DEBUG("⚠️ dispatched thread is current thread");
-    }
-    thread_suspend(thr);
-    PLCF_DEBUG("Creating thread context");
-    if (plcrash_async_thread_state_mach_thread_init(&pl_cpp_thread_state, thr) != PLCRASH_ESUCCESS) {
-        PLCF_DEBUG("Couldn't create thread state");
-    }
-    PLCF_DEBUG("Resuming original thread");
-    thread_resume(thr);
-    PLCF_DEBUG("Resumed original thread");
-    PLCF_DEBUG("Ending deteched thread work");
-    pthread_exit(NULL);
-}
 
 struct cpp_exception_callback_live_cb_ctx {
     int crashed_thread;
@@ -55,7 +36,7 @@ static plcrash_error_t plcr_cpp_exception_callback(plcrash_async_thread_state_t 
     if (state == NULL) {
 //        PLCF_DEBUG("state is null");
     }
-    pl_cpp_thread_state = *state;
+    pl_cpp_thread_state_final = *state;
 //    PLCF_DEBUG("ended plcr_cpp_exception_callback");
     return PLCRASH_ESUCCESS;
 }
@@ -79,19 +60,19 @@ extern "C"
 //        if (calledOnce == false) {
             plcrash_async_thread_state_current(plcr_cpp_exception_callback, &live_ctx);
 //        pl_cpp_thread_state.cursor = &cursor;
-        plcrash_async_memset(&pl_cpp_thread_state_final, 0, sizeof(pl_cpp_thread_state_final));
-//        pl_cpp_thread_state_final.stack_direction = pl_cpp_thread_state.stack_direction;
-//        pl_cpp_thread_state_final.greg_size = pl_cpp_thread_state.greg_size;
-//        pl_cpp_thread_state_final.valid_regs = pl_cpp_thread_state.valid_regs;
-
-#ifdef PLCRASH_ASYNC_THREAD_ARM_SUPPORT
-        PLCF_DEBUG("Ran arm64 code");
-        plcrash_async_memcpy(&pl_cpp_thread_state_final, &pl_cpp_thread_state, sizeof(pl_cpp_thread_state_final));
-//        newOne.arm_state = pl_cpp_thread_state.arm_state;
-#endif
-#ifdef PLCRASH_ASYNC_THREAD_X86_SUPPORT
-        pl_cpp_thread_state_final.x86_state = pl_cpp_thread_state.x86_state;
-#endif
+//        plcrash_async_memset(&pl_cpp_thread_state_final, 0, sizeof(pl_cpp_thread_state_final));
+////        pl_cpp_thread_state_final.stack_direction = pl_cpp_thread_state.stack_direction;
+////        pl_cpp_thread_state_final.greg_size = pl_cpp_thread_state.greg_size;
+////        pl_cpp_thread_state_final.valid_regs = pl_cpp_thread_state.valid_regs;
+//
+//#ifdef PLCRASH_ASYNC_THREAD_ARM_SUPPORT
+//        PLCF_DEBUG("Ran arm64 code");
+////        plcrash_async_memcpy(&pl_cpp_thread_state_final, &pl_cpp_thread_state, sizeof(pl_cpp_thread_state_final));
+////        newOne.arm_state = pl_cpp_thread_state.arm_state;
+//#endif
+//#ifdef PLCRASH_ASYNC_THREAD_X86_SUPPORT
+//        pl_cpp_thread_state_final.x86_state = pl_cpp_thread_state.x86_state;
+//#endif
         plcrash_greg_t pc = plcrash_async_thread_state_get_reg(&pl_cpp_thread_state_final, PLCRASH_REG_IP);
         PLCF_DEBUG("PC at __cxa_throw: 0x%" PRIx64, (uint64_t) pc);
 //        pl_cpp_thread_state = newOne;
