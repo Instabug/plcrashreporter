@@ -17,19 +17,28 @@
 #include <inttypes.h>
 #include "PLCrashAsyncSymbolication.h"
 #include "PLCrashAsyncImageList.h"
-#include "PLCrashMacros.h"
 
-static plcrash_log_writer_t *writer;
-//static bool calledOnce = false;
-//plcrash_async_thread_state_t pl_cpp_thread_state;
-static plcrash_async_thread_state_t pl_cpp_thread_state_final;
+#define DESCRIPTION_BUFFER_LENGTH 1000
+
+// Public
 plframe_cursor_t pl_cpp_cursor;
+plcrash_cpp_exception_t pl_cpp_exception;
+
+// Private
+static plcrash_async_thread_state_t pl_cpp_thread_state_final;
 
 static std::terminate_handler originalHandler;
 
 struct cpp_exception_callback_live_cb_ctx {
     int crashed_thread;
 };
+
+extern "C" char* pl_demangleCPP(const char* mangledSymbol)
+{
+    int status = 0;
+    char* demangled = __cxxabiv1::__cxa_demangle(mangledSymbol, NULL, NULL, &status);
+    return status == 0 ? demangled : NULL;
+}
 
 static plcrash_error_t plcr_cpp_exception_callback(plcrash_async_thread_state_t *state, void *ctx) {
 //    PLCF_DEBUG("plcr_cpp_exception_callback");
@@ -286,13 +295,49 @@ static void PLCCPPTerminateHandler(void) {
 //      }
 //    }
 
+    pl_cpp_exception.has_exception = false;
     const char* name = NULL;
     std::type_info* tinfo = __cxxabiv1::__cxa_current_exception_type();
     if(tinfo != NULL)
     {
-        name = tinfo->name();
+        name = pl_demangleCPP(tinfo->name());
     }
     if(name == NULL || strcmp(name, "NSException") != 0) {
+        char descriptionBuff[DESCRIPTION_BUFFER_LENGTH];
+        const char* description = descriptionBuff;
+        descriptionBuff[0] = 0;
+
+        try
+        {
+            throw;
+        }
+        catch(std::exception& exc)
+        {
+            strncpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
+        }
+#define CATCH_VALUE(TYPE, PRINTFTYPE) \
+catch(TYPE value)\
+{ \
+    snprintf(descriptionBuff, sizeof(descriptionBuff), "%" #PRINTFTYPE, value); \
+}
+        CATCH_VALUE(char,                 d)
+        CATCH_VALUE(short,                d)
+        CATCH_VALUE(int,                  d)
+        CATCH_VALUE(long,                ld)
+        CATCH_VALUE(long long,          lld)
+        CATCH_VALUE(unsigned char,        u)
+        CATCH_VALUE(unsigned short,       u)
+        CATCH_VALUE(unsigned int,         u)
+        CATCH_VALUE(unsigned long,       lu)
+        CATCH_VALUE(unsigned long long, llu)
+        CATCH_VALUE(float,                f)
+        CATCH_VALUE(double,               f)
+        CATCH_VALUE(long double,         Lf)
+        CATCH_VALUE(char*,                s)
+        catch(...)
+        {
+            description = NULL;
+        }
         PLCF_DEBUG("Rethrow exception");
         try
         {
@@ -301,53 +346,15 @@ static void PLCCPPTerminateHandler(void) {
         catch(std::exception& exc)
         {
             PLCF_DEBUG("caught exception");
-            writer->
-            exc.what();
-    //        strncpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
+            pl_cpp_exception.has_exception = true;
+            pl_cpp_exception.name = strdup(name);
+            pl_cpp_exception.reason = strdup(description);
         }
     } else {
         PLCF_DEBUG("Captured NSException, let NSException handler handle it ");
     }
-//    try {
-//    @try {
-//        // This could potentially cause a call to std::terminate() if there is actually no active
-//        // exception.
-//
-//        PLCF_DEBUG("YH: Throwing excpetion")
-//        throw;
-//    } @catch (NSException *exception) {
-//    //    #if TARGET_OS_IPHONE
-//        PLCF_DEBUG("YH: C++ Crash detected as exception")
-////        PLCExceptionRecordNSException(exception);
-//
-//    //    #else
-//    //          // There's no need to record this here, because we're going to get
-//    //          // the value forward to us by AppKit
-//    //          FIRCLSSDKLog("Skipping ObjC exception at this point");
-//    //    #endif
-//    }
-//    } catch (const char *exc) {
-//        PLCExceptionRecord("const char *", exc);
-//    } catch (const std::string &exc) {
-//        PLCExceptionRecord("std::string", exc.c_str());
-//    } catch (const std::exception &exc) {
-////        PLCExceptionRecord(PLCExceptionDemangle(name), exc.what());
-//    } catch (const std::exception *exc) {
-////        PLCExceptionRecord(PLCExceptionDemangle(name), exc->what());
-//    } catch (const std::bad_alloc &exc) {
-//        // it is especially important to avoid demangling in this case, because the expetation at this
-//        // point is that all allocations could fail
-//        PLCExceptionRecord("std::bad_alloc", exc.what());
-//    } catch (...) {
-////        PLCExceptionRecord(PLCExceptionDemangle(name), "");
-//    }
-    
-    // only do this if there was a pre-existing handler
-//    if (handler) {
-//        PLCF_DEBUG("YH: invoking pre-existing handler");
-//      handler();
-//    }
-    
+
+    // Resume threads
     for (mach_msg_type_number_t i = 0; i < thread_count; i++) {
         if (threads[i] != pl_mach_thread_self())
             thread_resume(threads[i]);
