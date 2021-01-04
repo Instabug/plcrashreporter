@@ -151,14 +151,12 @@ plframe_error_t plframe_cursor_thread_init (plframe_cursor_t *cursor, task_t tas
  * @return Returns PLFRAME_ESUCCESS on success, PLFRAME_ENOFRAME is no additional frames are available, or a standard plframe_error_t code if an error occurs.
  */
 plframe_error_t plframe_cursor_next_with_readers (plframe_cursor_t *cursor, plframe_cursor_frame_reader_t *readers[], size_t reader_count) {
-    PLCF_DEBUG("Loading next frame with cursor (%p) info: %d %d %d", cursor, cursor->_recorded, cursor->depth, cursor->_max_depth);
     /* The first frame is already available via existing thread state. */
     if (cursor->depth == 0) {
         cursor->depth++;
         if (cursor->_recorded) {
             plframe_error_t err = plframe_cursor_thread_state_recorded_at(cursor, 0, &cursor->frame.thread_state);
             if (err != PLFRAME_ESUCCESS) {
-                PLCF_DEBUG("No state has been recoreded: %s", IBGplframe_strerror(err));
                 return PLFRAME_EUNKNOWN;
             }
         }
@@ -175,12 +173,10 @@ plframe_error_t plframe_cursor_next_with_readers (plframe_cursor_t *cursor, plfr
     plframe_error_t ferr = PLFRAME_EINVAL; // default return value if reader_count is 0.
     
     if (cursor->_recorded) {
-        PLCF_DEBUG("Loading from recorded frames");
         plcrash_async_thread_state_t thread_state;
         ferr = plframe_cursor_thread_state_recorded_at(cursor, cursor->depth, &thread_state);
         frame.thread_state = thread_state;
     } else {
-        PLCF_DEBUG("Reading new frames");
         for (size_t i = 0; i < reader_count; i++) {
             ferr = readers[i](cursor->task, cursor->image_list, &cursor->frame, prev_frame, &frame);
             if (ferr == PLFRAME_ESUCCESS)
