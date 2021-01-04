@@ -902,7 +902,6 @@ struct pl_symbol_cb_ctx {
  */
 static void plcrash_writer_write_thread_frame_symbol_cb (pl_vm_address_t address, const char *name, void *ctx) {
     struct pl_symbol_cb_ctx *cb_ctx = ctx;
-    PLCF_DEBUG("Writing symbol: %s", name)
     cb_ctx->msgsize = (uint32_t) plcrash_writer_write_symbol(cb_ctx->file, name, address);
 }
 
@@ -917,7 +916,6 @@ static void plcrash_writer_write_thread_frame_symbol_cb (pl_vm_address_t address
 static size_t plcrash_writer_write_thread_frame (plcrash_async_file_t *file, plcrash_log_writer_t *writer, uint64_t pcval, plcrash_async_image_list_t *image_list, plcrash_async_symbol_cache_t *findContext) {
     size_t rv = 0;
 
-    PLCF_DEBUG("Writing PC val: %llu", pcval)
     rv += plcrash_writer_pack(file, PLCRASH_PROTO_THREAD_FRAME_PC_ID, PLPROTOBUF_C_TYPE_UINT64, &pcval);
     
     plcrash_async_image_list_set_reading(image_list, true);
@@ -964,6 +962,7 @@ static size_t plcrash_writer_write_thread_frame (plcrash_async_file_t *file, plc
  * @param thread_number The thread's index number.
  * @param thread_ctx Thread state to use for stack walking. If NULL, the thread state will be fetched from @a thread. If
  * @a thread is the currently executing thread, <em>must</em> be non-NULL.
+ * @param recorded_cursor Cursor to use for stack walking. If NULL, the cursor will be fetched from @a thread_state.
  * @param image_list The Mach-O image list.
  * @param findContext Symbol lookup cache.
  * @param crashed If true, mark this as a crashed thread.
@@ -984,7 +983,7 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
     plframe_error_t ferr;
 
     /* A context must be supplied when walking the current thread */
-    PLCF_ASSERT(task != mach_task_self() || thread_ctx != NULL || thread != pl_mach_thread_self());
+    PLCF_ASSERT(task != mach_task_self() || thread_ctx != NULL || thread != pl_mach_thread_self() || recorded_cursor != NULL);
 
     /* Write the required elements first; fatal errors may occur below, in which case we need to have
      * written out required elements before returning. */
@@ -1005,14 +1004,13 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
              * from the target thread's state. */
             plcrash_async_thread_state_t cursor_thr_state;
             if (recorded_cursor != NULL) {
-                PLCF_DEBUG("Write thread: using recorded cursor");
+                /* Use recorded cursor if available */
                 cursor = *recorded_cursor;
             } else {
+                /* Else create new cursor from thread state or thread */
                 if (thread_ctx != NULL) {
-                    PLCF_DEBUG("Using passed thread context");
                     cursor_thr_state = *thread_ctx;
                 } else {
-                    PLCF_DEBUG("Creating thread context");
                     plcrash_async_thread_state_mach_thread_init(&cursor_thr_state, thread);
                 }
                 ferr = plframe_cursor_init(&cursor, task, &cursor_thr_state, image_list);
@@ -1038,14 +1036,6 @@ static size_t plcrash_writer_write_thread (plcrash_async_file_t *file,
             if ((ferr = plframe_cursor_get_reg(&cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
                 PLCF_DEBUG("Could not retrieve frame PC register: %s", plframe_strerror(ferr));
                 break;
-            } else {
-                PLCF_DEBUG("Next -> PC at __cxa_throw: 0x%" PRIx64, (uint64_t) pc);
-//                plcrash_greg_t fp = 0;
-//                plframe_cursor_get_reg(&cursor, PLCRASH_REG_FP, &fp);
-//                plcrash_greg_t sp = 0;
-//                plframe_cursor_get_reg(&cursor, PLCRASH_REG_SP, &sp);
-//                PLCF_DEBUG("Next -> FP at __cxa_throw: 0x%" PRIx64, (uint64_t) fp);
-//                PLCF_DEBUG("Next -> SP at __cxa_throw: 0x%" PRIx64, (uint64_t) sp);
             }
 
             /* Determine the size */
@@ -1274,6 +1264,8 @@ static size_t plcrash_writer_write_report_info (plcrash_async_file_t *file, plcr
  * context-generating trampoline such as plcrash_log_writer_write_curthread(). If NULL, a thread dump for the current
  * thread will not be written. If @a crashed_thread is the current thread (as returned by mach_thread_self()), this
  * value <em>must</em> be provided.
+ * @param cursor If non-NULL, the given cursor will be used when walking the current thread.
+ * This is Used for CPP exceptions that has the stacktrace recorded at __cxa_throw.
  */
 plcrash_error_t plcrash_log_writer_write (plcrash_log_writer_t *writer,
                                           thread_t crashed_thread,
@@ -1405,13 +1397,11 @@ plcrash_error_t plcrash_log_writer_write (plcrash_log_writer_t *writer,
         if (pl_mach_thread_self() == thread) {
             /* Can't log a report for the current thread without a recorded cursor or a valid context. */
             if (cursor != NULL) {
-                PLCF_DEBUG("YH: Using recorded cursor");
                 recorded_cursor = cursor;
             } else if (current_state != NULL) {
-                PLCF_DEBUG("YH: Using current thread instead of thread");
                 thr_ctx = current_state;
             } else {
-                PLCF_DEBUG("YH: current state is nil");
+                PLCF_DEBUG("Current thread doesn't have thread context or a cursor");
                 continue;
             }
         }

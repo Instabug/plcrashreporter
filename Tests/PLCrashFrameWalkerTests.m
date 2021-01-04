@@ -149,7 +149,6 @@ static plframe_error_t esuccess_reader (task_t task,
         first_loop_counter++;
     }
     plframe_cursor_restart_recording(&cursor);
-    PLCF_DEBUG("wala3 messagesssssssdsfasidjqwioe2quje");
 
     size_t second_loop_counter = 0;
     while ((ferr = plframe_cursor_next(&cursor)) == PLFRAME_ESUCCESS) {

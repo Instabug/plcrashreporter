@@ -83,16 +83,13 @@ static void populate_nserror (NSError **error, PLCrashReporterError code, NSStri
         populate_nserror(outError, PLCrashReporterErrorUnknown, @"Could not initialize superclass");
         return nil;
     }
-    PLCF_DEBUG("YHCR: Created super class")
 
 
     /* Allocate the struct and attempt to parse */
     _decoder = malloc(sizeof(_PLCrashReportDecoder));
     
-    PLCF_DEBUG("YHCR: Allocated decoder")
     _decoder->crashReport = [self decodeCrashData: encodedData error: outError];
     
-    PLCF_DEBUG("YHCR: decoded crash report")
     /* Check if decoding failed. If so, outError has already been populated. */
     if (_decoder->crashReport == NULL) {
         goto error;

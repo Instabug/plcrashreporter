@@ -32,7 +32,7 @@ extern plframe_cursor_t pl_cpp_cursor;
 extern plcrash_cpp_exception_t pl_cpp_exception;
 
 /// Sets uncaught CPP exception handler.
-void setCPPExceptionHandler(void);
+void plcrash_setUncaughtCPPExceptionHandler(void);
 
 PLCR_C_END_DECLS
 

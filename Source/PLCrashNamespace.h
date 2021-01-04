@@ -263,6 +263,7 @@
 #define plcrash_sysctl_valid_utf8_bytes PLNS(plcrash_sysctl_valid_utf8_bytes)
 #define plcrash_sysctl_valid_utf8_bytes_max PLNS(plcrash_sysctl_valid_utf8_bytes_max)
 #define plcrash_writer_pack PLNS(plcrash_writer_pack)
+#define plcrash_setUncaughtCPPExceptionHandler PLNS(plcrash_setUncaughtCPPExceptionHandler)
 #define plframe_cursor_free PLNS(plframe_cursor_free)
 #define plframe_cursor_get_reg PLNS(plframe_cursor_get_reg)
 #define plframe_cursor_get_regcount PLNS(plframe_cursor_get_regcount)

@@ -201,7 +201,7 @@ catch(TYPE value)\
     }
 }
 
-void setCPPExceptionHandler() {
+void plcrash_setUncaughtCPPExceptionHandler() {
     /* Setting PLCCPPTerminateHandler as the handler for CPP exceptions to get exception info */
     originalHandler = std::set_terminate(PLCCPPTerminateHandler);
     PLCF_DEBUG("Did set PLCrashReporter as handler for uncaught CPP exceptions")

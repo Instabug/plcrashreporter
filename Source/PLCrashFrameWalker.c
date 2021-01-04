@@ -287,7 +287,7 @@ void plframe_cursor_record (plframe_cursor_t *cursor, plcrash_async_thread_state
  * @param cursor Cursor to be set up.
  */
 void plframe_cursor_start_recording (plframe_cursor_t *cursor) {
-    cursor->_list = (plcrash_async_thread_state_t *) malloc(250 * sizeof(plcrash_async_thread_state_t));
+    cursor->_list = (plcrash_async_thread_state_t *) malloc(100 * sizeof(plcrash_async_thread_state_t));
 }
 
 /**
