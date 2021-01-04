@@ -123,16 +123,6 @@ typedef struct plframe_stackframe {
 
 /**
  * @internal
- * cursor frame info.
- */
-struct plframe_cursor_info {
-    plcrash_greg_t ip;
-    plcrash_greg_t sp;
-    plcrash_greg_t fp;
-};
-
-/**
- * @internal
  * Frame cursor context.
  */
 typedef struct plframe_cursor {
@@ -152,16 +142,14 @@ typedef struct plframe_cursor {
     /** The current stack frame data */
     plframe_stackframe_t frame;
 
-    /** The flag to determine if recorded mode is active  */
+    /** The flag to determine if recorded cursor has recorded  */
     bool _recorded;
+
+    /** Max depth of the recording */
     uint32_t _max_depth;
     
-    /** The recording list when in recorded mode */
-//#ifdef __cplusplus
+    /** The thread states' recorded list */
     plcrash_async_thread_state_t *_list;
-//#else
-//    void *_list;
-//#endif
 } plframe_cursor_t;
 
 /**

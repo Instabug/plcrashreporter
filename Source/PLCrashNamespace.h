@@ -274,6 +274,8 @@
 #define plframe_cursor_read_compact_unwind PLNS(plframe_cursor_read_compact_unwind)
 #define plframe_cursor_read_dwarf_unwind PLNS(plframe_cursor_read_dwarf_unwind)
 #define plframe_cursor_read_frame_ptr PLNS(plframe_cursor_read_frame_ptr)
+#define plframe_cursor_start_recording PLNS(plframe_cursor_start_recording)
+#define plframe_cursor_restart_recording PLNS(plframe_cursor_restart_recording)
 #define plframe_cursor_thread_init PLNS(plframe_cursor_thread_init)
 #define plframe_cursor_record PLNS(plframe_cursor_record)
 #define plframe_strerror PLNS(plframe_strerror)
