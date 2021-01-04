@@ -66,6 +66,9 @@ extern "C"
 
     void __cxa_throw(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*))
     {
+        plcrash_async_symbol_cache_t findContext;
+        plframe_error_t ferr;
+
         /* Get thread state for current thread to create cursor and save stack trace */
         struct cpp_exception_callback_live_cb_ctx live_ctx = {
             .crashed_thread = 1,
@@ -73,19 +76,18 @@ extern "C"
         plcrash_error_t err = plcrash_async_thread_state_current(plcr_cpp_exception_callback, &live_ctx);
         if (err != PLCRASH_ESUCCESS) {
             PLCF_DEBUG("Couldn't create thread state: %s", plcrash_async_strerror(err));
-            // Call original handler
+            goto call_original_handler;
         }
 
         /* Creating cursor */
-        plcrash_async_symbol_cache_t findContext;
         err = plcrash_async_symbol_cache_init(&findContext);
         if (err != PLCRASH_ESUCCESS) {
             PLCF_DEBUG("Couldn't create cache: %s", plcrash_async_strerror(err));
         }
-        plframe_error_t ferr = plframe_cursor_init(&pl_cpp_cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
+        ferr = plframe_cursor_init(&pl_cpp_cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
         if (ferr != PLFRAME_ESUCCESS) {
             PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
-            // Call original handler
+            goto call_original_handler;
         }
 
         /* Start recording frames for cursor */
@@ -103,6 +105,8 @@ extern "C"
 
         plframe_cursor_restart_recording(&pl_cpp_cursor);
         plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our __cxa_throw.
+
+        call_original_handler:
 
         static cxa_throw_type orig_cxa_throw = NULL;
         if(orig_cxa_throw == NULL)
