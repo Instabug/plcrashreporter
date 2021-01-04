@@ -132,6 +132,7 @@ extern "C"
         }
         
         plframe_cursor_restart_recording(&pl_cpp_cursor);
+        plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our __cxa_throw.
         pl_cpp_thread_state_final.cursor = &pl_cpp_cursor;
         PLCF_DEBUG("finished looping on all symbols, cursor: (%p)", pl_cpp_thread_state_final.cursor);
 
