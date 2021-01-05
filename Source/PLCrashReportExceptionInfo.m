@@ -43,8 +43,8 @@
  * @param name Exception name.
  * @param reason Exception reason.
  */
-- (id) initWithExceptionName: (NSString *) name reason: (NSString *) reason {
-    return [self initWithExceptionName: name reason: reason stackFrames: nil];
+- (id) initWithExceptionName: (NSString *) name reason: (NSString *) reason isCPPException: (BOOL) isCPPException {
+    return [self initWithExceptionName: name reason: reason stackFrames: nil isCPPException: isCPPException];
 }
 
 /**
@@ -54,13 +54,17 @@
  * @param reason Exception reason.
  * @param stackFrames The exception's original call stack, as an array of PLCrashReportStackFrameInfo instances.
  */
-- (id) initWithExceptionName: (NSString *) name reason: (NSString *) reason stackFrames: (NSArray *) stackFrames {
+- (id) initWithExceptionName: (NSString *) name
+                      reason: (NSString *) reason
+                 stackFrames: (NSArray *) stackFrames
+              isCPPException: (BOOL) isCPPException {
     if ((self = [super init]) == nil)
         return nil;
     
     _name = name;
     _reason = reason;
     _stackFrames = stackFrames;
+    _isCPPException = isCPPException;
     
     return self;
 }

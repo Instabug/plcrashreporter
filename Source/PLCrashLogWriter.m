@@ -173,7 +173,9 @@ enum {
     
     /** CrashReports.exception.frames */
     PLCRASH_PROTO_EXCEPTION_FRAMES_ID = 3,
-
+    
+    /** CrashReports.exception.is_cpp_exception */
+    PLCRASH_PROTO_EXCEPTION_IS_CPP_EXCEPTION_ID = 4,
 
     /** CrashReport.signal */
     PLCRASH_PROTO_SIGNAL_ID = 6,
@@ -492,6 +494,7 @@ void plcrash_log_writer_set_exception (plcrash_log_writer_t *writer, NSException
 
     /* Save the exception data */
     writer->uncaught_exception.has_exception = true;
+    writer->uncaught_exception.is_cpp_exception = false;
     writer->uncaught_exception.name = strdup([[exception name] UTF8String]);
     writer->uncaught_exception.reason = strdup([exception reason] != nil ? [[exception reason] UTF8String] : "");
 
@@ -1142,6 +1145,9 @@ static size_t plcrash_writer_write_exception (plcrash_async_file_t *file, plcras
         rv += plcrash_writer_write_thread_frame(file, writer, pc, image_list, findContext);
         frame_count++;
     }
+
+    /* Write is CPP exception */
+    rv += plcrash_writer_pack(file, PLCRASH_PROTO_EXCEPTION_IS_CPP_EXCEPTION_ID, PLPROTOBUF_C_TYPE_BOOL, &writer->uncaught_exception.is_cpp_exception);
 
     return rv;
 }

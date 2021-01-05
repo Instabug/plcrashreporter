@@ -40,13 +40,17 @@
 
     /** Ordered list of PLCrashReportStackFrame instances, or nil if unavailable. */
     __strong NSArray *_stackFrames;
+    
+    /** If YES, the exception is CPP exception */
+    BOOL _isCPPException;
 }
 
-- (id) initWithExceptionName: (NSString *) name reason: (NSString *) reason;
+- (id) initWithExceptionName: (NSString *) name reason: (NSString *) reason isCPPException: (BOOL) isCPPException;
 
 - (id) initWithExceptionName: (NSString *) name 
                       reason: (NSString *) reason
-                 stackFrames: (NSArray *) stackFrames;
+                 stackFrames: (NSArray *) stackFrames
+              isCPPException: (BOOL) isCPPException;
 
 /**
  * The exception name.
@@ -61,5 +65,8 @@
 /* The exception's original call stack, as an array of PLCrashReportStackFrameInfo instances, or nil if unavailable.
  * This may be preserved across rethrow of an exception, and can be used to determine the original call stack. */
 @property(nonatomic, readonly, strong) NSArray *stackFrames;
+
+/* Flags wether exception is CPP exception */
+@property(nonatomic, readonly, assign) BOOL isCPPException;
 
 @end

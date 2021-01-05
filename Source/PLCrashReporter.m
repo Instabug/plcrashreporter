@@ -226,6 +226,7 @@ static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t 
 
     if (pl_cpp_exception.has_exception) {
         signal_handler_context.writer.uncaught_exception.has_exception = true;
+        signal_handler_context.writer.uncaught_exception.is_cpp_exception = true;
         signal_handler_context.writer.uncaught_exception.reason = pl_cpp_exception.name;
         signal_handler_context.writer.uncaught_exception.name = pl_cpp_exception.reason;
     }

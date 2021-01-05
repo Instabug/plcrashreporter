@@ -367,10 +367,14 @@ struct  _Plcrash__CrashReport__Exception
    */
   size_t n_frames;
   Plcrash__CrashReport__Thread__StackFrame **frames;
+  /*
+   * The exception name that triggered this crash 
+   */
+  protobuf_c_boolean is_cpp_exception;
 };
 #define PLCRASH__CRASH_REPORT__EXCEPTION__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&plcrash__crash_report__exception__descriptor) \
-    , NULL, NULL, 0,NULL }
+    , NULL, NULL, 0,NULL, 0 }
 
 
 /*
