@@ -17,6 +17,7 @@
 #include <inttypes.h>
 #include "PLCrashAsyncSymbolication.h"
 #include "PLCrashAsyncImageList.h"
+#include "PLCxaThrowSwapper.h"
 
 #define DESCRIPTION_BUFFER_LENGTH 100
 
@@ -64,49 +65,52 @@ extern "C"
 {
     void __cxa_throw(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*)) __attribute__ ((weak));
 
-    void __cxa_throw(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*))
+static void captureStackTraceInCursor(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*)) {
+    plcrash_async_symbol_cache_t findContext;
+    plframe_error_t ferr;
+    
+    /* Get thread state for current thread to create cursor and save stack trace */
+    struct cpp_exception_callback_live_cb_ctx live_ctx = {
+        .crashed_thread = 1,
+    };
+    plcrash_error_t err = plcrash_async_thread_state_current(plcr_cpp_exception_callback, &live_ctx);
+    if (err != PLCRASH_ESUCCESS) {
+        PLCF_DEBUG("Couldn't create thread state: %s", plcrash_async_strerror(err));
+        return;
+    }
+    
+    /* Creating cursor */
+    err = plcrash_async_symbol_cache_init(&findContext);
+    if (err != PLCRASH_ESUCCESS) {
+        PLCF_DEBUG("Couldn't create cache: %s", plcrash_async_strerror(err));
+    }
+    ferr = plframe_cursor_init(&pl_cpp_cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
+    if (ferr != PLFRAME_ESUCCESS) {
+        PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
+        return;
+    }
+    
+    /* Start recording frames for cursor */
+    plframe_cursor_start_recording(&pl_cpp_cursor);
+    while ((ferr = plframe_cursor_next(&pl_cpp_cursor)) == PLFRAME_ESUCCESS) {
+        /* Fetch the PC value */
+        plcrash_greg_t pc = 0;
+        if ((ferr = plframe_cursor_get_reg(&pl_cpp_cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
+            PLCF_DEBUG("Could not retrieve frame PC register: %s", plframe_strerror(ferr));
+            break;
+        }
+        /* Record frame in cursor */
+        plframe_cursor_record(&pl_cpp_cursor, pl_cpp_cursor.frame.thread_state);
+    }
+    
+    plframe_cursor_restart_recording(&pl_cpp_cursor);
+    plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our swap.
+    plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our __cxa_throw.
+}
+
+void __cxa_throw(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*))
     {
-        plcrash_async_symbol_cache_t findContext;
-        plframe_error_t ferr;
-
-        /* Get thread state for current thread to create cursor and save stack trace */
-        struct cpp_exception_callback_live_cb_ctx live_ctx = {
-            .crashed_thread = 1,
-        };
-        plcrash_error_t err = plcrash_async_thread_state_current(plcr_cpp_exception_callback, &live_ctx);
-        if (err != PLCRASH_ESUCCESS) {
-            PLCF_DEBUG("Couldn't create thread state: %s", plcrash_async_strerror(err));
-            goto call_original_handler;
-        }
-
-        /* Creating cursor */
-        err = plcrash_async_symbol_cache_init(&findContext);
-        if (err != PLCRASH_ESUCCESS) {
-            PLCF_DEBUG("Couldn't create cache: %s", plcrash_async_strerror(err));
-        }
-        ferr = plframe_cursor_init(&pl_cpp_cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
-        if (ferr != PLFRAME_ESUCCESS) {
-            PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
-            goto call_original_handler;
-        }
-
-        /* Start recording frames for cursor */
-        plframe_cursor_start_recording(&pl_cpp_cursor);
-        while ((ferr = plframe_cursor_next(&pl_cpp_cursor)) == PLFRAME_ESUCCESS) {
-            /* Fetch the PC value */
-            plcrash_greg_t pc = 0;
-            if ((ferr = plframe_cursor_get_reg(&pl_cpp_cursor, PLCRASH_REG_IP, &pc)) != PLFRAME_ESUCCESS) {
-                PLCF_DEBUG("Could not retrieve frame PC register: %s", plframe_strerror(ferr));
-                break;
-            }
-            /* Record frame in cursor */
-            plframe_cursor_record(&pl_cpp_cursor, pl_cpp_cursor.frame.thread_state);
-        }
-
-        plframe_cursor_restart_recording(&pl_cpp_cursor);
-        plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our __cxa_throw.
-
-        call_original_handler:
+        captureStackTraceInCursor(NULL, NULL, NULL);
 
         static cxa_throw_type orig_cxa_throw = NULL;
         if(orig_cxa_throw == NULL)
@@ -205,4 +209,7 @@ void plcrash_setUncaughtCPPExceptionHandler() {
     /* Setting PLCCPPTerminateHandler as the handler for CPP exceptions to get exception info */
     originalHandler = std::set_terminate(PLCCPPTerminateHandler);
     PLCF_DEBUG("Did set PLCrashReporter as handler for uncaught CPP exceptions")
+
+    plct_swap(captureStackTraceInCursor);
+    PLCF_DEBUG("Did dynamically swap __cxa_throw")
 }

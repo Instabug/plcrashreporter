@@ -342,6 +342,21 @@
 		24E18853237D71B90067CE94 /* PLString.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1884B237D71B90067CE94 /* PLString.c */; };
 		24E18854237D71B90067CE94 /* PLString.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1884B237D71B90067CE94 /* PLString.c */; };
 		24E18856237D71B90067CE94 /* PLString.c in Sources */ = {isa = PBXBuildFile; fileRef = 24E1884B237D71B90067CE94 /* PLString.c */; };
+		24EF251425A444A300964CBB /* PLCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EF251325A443E400964CBB /* PLCxaThrowSwapper.h */; };
+		24EF251525A444A300964CBB /* PLgetsect.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EF251225A443E400964CBB /* PLgetsect.h */; };
+		24EF251625A444A300964CBB /* PLPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EF251025A443E400964CBB /* PLPlatformSpecificDefines.h */; };
+		24EF251725A444A300964CBB /* PLCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EF251325A443E400964CBB /* PLCxaThrowSwapper.h */; };
+		24EF251825A444A300964CBB /* PLgetsect.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EF251225A443E400964CBB /* PLgetsect.h */; };
+		24EF251925A444A300964CBB /* PLPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EF251025A443E400964CBB /* PLPlatformSpecificDefines.h */; };
+		24EF251A25A444A300964CBB /* PLCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EF251325A443E400964CBB /* PLCxaThrowSwapper.h */; };
+		24EF251B25A444A300964CBB /* PLgetsect.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EF251225A443E400964CBB /* PLgetsect.h */; };
+		24EF251C25A444A300964CBB /* PLPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EF251025A443E400964CBB /* PLPlatformSpecificDefines.h */; };
+		24EF252F25A444AF00964CBB /* PLCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 24EF251125A443E400964CBB /* PLCxaThrowSwapper.c */; };
+		24EF253025A444AF00964CBB /* PLgetsect.c in Sources */ = {isa = PBXBuildFile; fileRef = 24EF250F25A443E400964CBB /* PLgetsect.c */; };
+		24EF254325A444B000964CBB /* PLCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 24EF251125A443E400964CBB /* PLCxaThrowSwapper.c */; };
+		24EF254425A444B000964CBB /* PLgetsect.c in Sources */ = {isa = PBXBuildFile; fileRef = 24EF250F25A443E400964CBB /* PLgetsect.c */; };
+		24EF254525A444B100964CBB /* PLCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 24EF251125A443E400964CBB /* PLCxaThrowSwapper.c */; };
+		24EF254625A444B100964CBB /* PLgetsect.c in Sources */ = {isa = PBXBuildFile; fileRef = 24EF250F25A443E400964CBB /* PLgetsect.c */; };
 		2D0E10461141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0E10441141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2D0E10481141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D0E10441141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2D0E10491141F7DC00CE1BD6 /* PLCrashReportProcessInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D0E10451141F7DC00CE1BD6 /* PLCrashReportProcessInfo.m */; };
@@ -1232,6 +1247,11 @@
 		24E1883D237D6E260067CE94 /* PLMemory.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = PLMemory.c; sourceTree = "<group>"; };
 		24E1884A237D71B90067CE94 /* PLString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PLString.h; sourceTree = "<group>"; };
 		24E1884B237D71B90067CE94 /* PLString.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = PLString.c; sourceTree = "<group>"; };
+		24EF250F25A443E400964CBB /* PLgetsect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PLgetsect.c; sourceTree = "<group>"; };
+		24EF251025A443E400964CBB /* PLPlatformSpecificDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLPlatformSpecificDefines.h; sourceTree = "<group>"; };
+		24EF251125A443E400964CBB /* PLCxaThrowSwapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PLCxaThrowSwapper.c; sourceTree = "<group>"; };
+		24EF251225A443E400964CBB /* PLgetsect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLgetsect.h; sourceTree = "<group>"; };
+		24EF251325A443E400964CBB /* PLCxaThrowSwapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLCxaThrowSwapper.h; sourceTree = "<group>"; };
 		2D0E10441141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLCrashReportProcessInfo.h; sourceTree = "<group>"; };
 		2D0E10451141F7DC00CE1BD6 /* PLCrashReportProcessInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLCrashReportProcessInfo.m; sourceTree = "<group>"; };
 		8064D81B1C4D22D8005A8B4C /* libCrashReporter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCrashReporter.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1548,7 +1568,7 @@
 		059672EF0EF0853A008A0601 /* Private API */ = {
 			isa = PBXGroup;
 			children = (
-				24EF24FA25A4432300964CBB /* New Group */,
+				24EF24FA25A4432300964CBB /* CPP Exception Handler */,
 				05BB3E0A17F61A6E00F464E9 /* PLCrashCompatConstants.h */,
 				0573B4281681097200395F2A /* Mach Exception Server */,
 				05BB84AE1364F5BC00D53B84 /* Signal Handler */,
@@ -1959,13 +1979,26 @@
 			name = "Register Content";
 			sourceTree = "<group>";
 		};
-		24EF24FA25A4432300964CBB /* New Group */ = {
+		24EF24FA25A4432300964CBB /* CPP Exception Handler */ = {
 			isa = PBXGroup;
 			children = (
+				24EF250D25A4439A00964CBB /* Dynamic Swap */,
 				244CFFE12577DA8D00459184 /* PLCCPPExceptionHandler.h */,
 				244CFFE22577DA8D00459184 /* PLCCPPExceptionHandler.cpp */,
 			);
 			name = "CPP Exception Handler";
+			sourceTree = "<group>";
+		};
+		24EF250D25A4439A00964CBB /* Dynamic Swap */ = {
+			isa = PBXGroup;
+			children = (
+				24EF251125A443E400964CBB /* PLCxaThrowSwapper.c */,
+				24EF251325A443E400964CBB /* PLCxaThrowSwapper.h */,
+				24EF250F25A443E400964CBB /* PLgetsect.c */,
+				24EF251225A443E400964CBB /* PLgetsect.h */,
+				24EF251025A443E400964CBB /* PLPlatformSpecificDefines.h */,
+			);
+			name = "Dynamic Swap";
 			sourceTree = "<group>";
 		};
 		32C88DFF0371C24200C91783 /* Other Sources */ = {
@@ -2119,6 +2152,8 @@
 				05EC51E1105316E900DB9D39 /* PLCrashReportThreadInfo.h in Headers */,
 				05EC51DF105316E900DB9D39 /* PLCrashReportSystemInfo.h in Headers */,
 				0573B44A1681108500395F2A /* PLCrashReportSymbolInfo.h in Headers */,
+				24EF251825A444A300964CBB /* PLgetsect.h in Headers */,
+				24EF251725A444A300964CBB /* PLCxaThrowSwapper.h in Headers */,
 				2D0E104E1141F7DC00CE1BD6 /* PLCrashReportProcessInfo.h in Headers */,
 				244CFFEA2577DB2100459184 /* PLCCPPExceptionHandler.h in Headers */,
 				05EC51E5105316E900DB9D39 /* PLCrashReportSignalInfo.h in Headers */,
@@ -2127,6 +2162,7 @@
 				05B69E1417CE6271001807C9 /* PLCrashReporterConfig.h in Headers */,
 				0513E23C17D15EE500727919 /* PLCrashReportMachExceptionInfo.h in Headers */,
 				05A5E28217A82751008A75E5 /* PLCrashMacros.h in Headers */,
+				24EF251925A444A300964CBB /* PLPlatformSpecificDefines.h in Headers */,
 				054627AD11D998BB007891C7 /* PLCrashReportTextFormatter.h in Headers */,
 				054627BD11D99D06007891C7 /* PLCrashReportFormatter.h in Headers */,
 				05771CE313683EDD001DE4B1 /* PLCrashReportMachineInfo.h in Headers */,
@@ -2372,6 +2408,8 @@
 				8064D89E1C4D22E5005A8B4C /* PLCrashReportThreadInfo.h in Headers */,
 				8064D89F1C4D22E5005A8B4C /* PLCrashReportSystemInfo.h in Headers */,
 				8064D8A11C4D22E5005A8B4C /* PLCrashReportSymbolInfo.h in Headers */,
+				24EF251525A444A300964CBB /* PLgetsect.h in Headers */,
+				24EF251425A444A300964CBB /* PLCxaThrowSwapper.h in Headers */,
 				8064D8A21C4D22E5005A8B4C /* PLCrashReportProcessInfo.h in Headers */,
 				244CFFEB2577DB2200459184 /* PLCCPPExceptionHandler.h in Headers */,
 				8064D8A31C4D22E5005A8B4C /* PLCrashReportSignalInfo.h in Headers */,
@@ -2380,6 +2418,7 @@
 				8064D8A51C4D22E5005A8B4C /* PLCrashReporterConfig.h in Headers */,
 				8064D8A61C4D22E5005A8B4C /* PLCrashReportMachExceptionInfo.h in Headers */,
 				8064D8A71C4D22E5005A8B4C /* PLCrashMacros.h in Headers */,
+				24EF251625A444A300964CBB /* PLPlatformSpecificDefines.h in Headers */,
 				8064D8A81C4D22E5005A8B4C /* PLCrashReportTextFormatter.h in Headers */,
 				8064D8A91C4D22E5005A8B4C /* PLCrashReportFormatter.h in Headers */,
 				8064D8AA1C4D22E5005A8B4C /* PLCrashReportMachineInfo.h in Headers */,
@@ -2392,6 +2431,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				05CD318B0EE93A90000FDE88 /* CrashReporter.h in Headers */,
+				24EF251C25A444A300964CBB /* PLPlatformSpecificDefines.h in Headers */,
 				05A04D8C15AB38C10011CFA4 /* PLCrashNamespace.h in Headers */,
 				05A5E28117A82751008A75E5 /* PLCrashMacros.h in Headers */,
 				054F51080EEC73C80034B184 /* PLCrashReporter.h in Headers */,
@@ -2412,8 +2452,10 @@
 				054627AF11D998BB007891C7 /* PLCrashReportTextFormatter.h in Headers */,
 				054627BC11D99D06007891C7 /* PLCrashReportFormatter.h in Headers */,
 				05BB83D11364A77800D53B84 /* PLCrashReportProcessorInfo.h in Headers */,
+				24EF251A25A444A300964CBB /* PLCxaThrowSwapper.h in Headers */,
 				05BB83F11364AD3E00D53B84 /* PLCrashReportMachineInfo.h in Headers */,
 				24E1884C237D71B90067CE94 /* PLString.h in Headers */,
+				24EF251B25A444A300964CBB /* PLgetsect.h in Headers */,
 				24E18819237D59540067CE94 /* PLCrashRegisterContent.h in Headers */,
 				24E1883E237D6E260067CE94 /* PLMemory.h in Headers */,
 				24E18822237D688A0067CE94 /* PLObjC.h in Headers */,
@@ -3162,6 +3204,7 @@
 				05CD36470EF24758000FDE88 /* PLCrashAsync.c in Sources */,
 				05CD36D40EF25717000FDE88 /* PLCrashLogWriterEncoding.c in Sources */,
 				05F40ACC0EF7379F008050CF /* PLCrashReporter.m in Sources */,
+				24EF254325A444B000964CBB /* PLCxaThrowSwapper.c in Sources */,
 				05F411A90EF8DA31008050CF /* PLCrashReport.m in Sources */,
 				05F413480EF995C0008050CF /* PLCrashReportSystemInfo.m in Sources */,
 				05F414230EF9A6C4008050CF /* PLCrashReportApplicationInfo.m in Sources */,
@@ -3204,6 +3247,7 @@
 				05E7484F175E5349009B8745 /* PLCrashAsyncDwarfPrimitives.cpp in Sources */,
 				05E748611760D64D009B8745 /* PLCrashAsyncDwarfFDE.cpp in Sources */,
 				05E748691760D891009B8745 /* PLCrashAsyncDwarfCIE.cpp in Sources */,
+				24EF254425A444B000964CBB /* PLgetsect.c in Sources */,
 				05E7487D176118C2009B8745 /* PLCrashAsyncDwarfCFAStateEvaluation.cpp in Sources */,
 				24E18854237D71B90067CE94 /* PLString.c in Sources */,
 				05E7488F176135CF009B8745 /* PLCrashAsyncDwarfExpression.cpp in Sources */,
@@ -3375,6 +3419,7 @@
 				05E731FF0EFA1AE3005EDFB7 /* PLCrashLogWriterEncoding.c in Sources */,
 				05E732000EFA1AE3005EDFB7 /* PLCrashReporter.m in Sources */,
 				05E732010EFA1AE3005EDFB7 /* PLCrashReport.m in Sources */,
+				24EF254525A444B100964CBB /* PLCxaThrowSwapper.c in Sources */,
 				05E732040EFA1AE3005EDFB7 /* PLCrashReportSystemInfo.m in Sources */,
 				05E732050EFA1AE3005EDFB7 /* PLCrashReportApplicationInfo.m in Sources */,
 				05E732060EFA1AE3005EDFB7 /* PLCrashReportThreadInfo.m in Sources */,
@@ -3417,6 +3462,7 @@
 				05C76DA6176B8C7000E9B10D /* dwarf_opstream.cpp in Sources */,
 				24E18845237D6E260067CE94 /* PLMemory.c in Sources */,
 				C2F7F1692451EB2D002BD8BF /* PLCrashAsyncThread_arm.c in Sources */,
+				24EF254625A444B100964CBB /* PLgetsect.c in Sources */,
 				05C76DC8176FBAF300E9B10D /* PLCrashAsyncDwarfCFAState.cpp in Sources */,
 				057C9BBF17970F6D006B242E /* PLCrashAsyncDwarfEncoding.cpp in Sources */,
 				057C9BC017970F77006B242E /* PLCrashAsyncDwarfExpression.cpp in Sources */,
@@ -3486,6 +3532,7 @@
 				8064D7FD1C4D22D8005A8B4C /* PLCrashMachExceptionServer.m in Sources */,
 				8064D7FE1C4D22D8005A8B4C /* PLCrashFrameStackUnwind.c in Sources */,
 				8064D7FF1C4D22D8005A8B4C /* PLCrashAsyncThread.c in Sources */,
+				24EF253025A444AF00964CBB /* PLgetsect.c in Sources */,
 				8064D8001C4D22D8005A8B4C /* PLCrashAsyncThread_x86.c in Sources */,
 				24E1881E237D5E340067CE94 /* PLCrashRegisterContent.c in Sources */,
 				8064D8011C4D22D8005A8B4C /* PLCrashAsyncThread_arm.c in Sources */,
@@ -3494,6 +3541,7 @@
 				244CFFE92577DB0E00459184 /* PLCCPPExceptionHandler.cpp in Sources */,
 				8064D8031C4D22D8005A8B4C /* PLCrashAsyncCompactUnwindEncoding.c in Sources */,
 				8064D8041C4D22D8005A8B4C /* PLCrashAsyncDwarfPrimitives.cpp in Sources */,
+				24EF252F25A444AF00964CBB /* PLCxaThrowSwapper.c in Sources */,
 				8064D8051C4D22D8005A8B4C /* PLCrashAsyncDwarfFDE.cpp in Sources */,
 				8064D8061C4D22D8005A8B4C /* PLCrashAsyncDwarfCIE.cpp in Sources */,
 				8064D8071C4D22D8005A8B4C /* PLCrashAsyncDwarfCFAStateEvaluation.cpp in Sources */,
