@@ -1548,6 +1548,7 @@
 		059672EF0EF0853A008A0601 /* Private API */ = {
 			isa = PBXGroup;
 			children = (
+				24EF24FA25A4432300964CBB /* New Group */,
 				05BB3E0A17F61A6E00F464E9 /* PLCrashCompatConstants.h */,
 				0573B4281681097200395F2A /* Mach Exception Server */,
 				05BB84AE1364F5BC00D53B84 /* Signal Handler */,
@@ -1932,8 +1933,6 @@
 				C2F0AC9F24AB7C28004890EC /* CrashReporterFramework.m */,
 				054F51070EEC73C80034B184 /* PLCrashReporter.h */,
 				05F40ACA0EF7379F008050CF /* PLCrashReporter.m */,
-				244CFFE12577DA8D00459184 /* PLCCPPExceptionHandler.h */,
-				244CFFE22577DA8D00459184 /* PLCCPPExceptionHandler.cpp */,
 				05BEC43417BF1CB10082CBFB /* PLCrashReporterConfig.h */,
 				05BEC43517BF1CB10082CBFB /* PLCrashReporterConfig.m */,
 				05A5E28017A82751008A75E5 /* PLCrashMacros.h */,
@@ -1958,6 +1957,15 @@
 				24E1884B237D71B90067CE94 /* PLString.c */,
 			);
 			name = "Register Content";
+			sourceTree = "<group>";
+		};
+		24EF24FA25A4432300964CBB /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				244CFFE12577DA8D00459184 /* PLCCPPExceptionHandler.h */,
+				244CFFE22577DA8D00459184 /* PLCCPPExceptionHandler.cpp */,
+			);
+			name = "CPP Exception Handler";
 			sourceTree = "<group>";
 		};
 		32C88DFF0371C24200C91783 /* Other Sources */ = {
