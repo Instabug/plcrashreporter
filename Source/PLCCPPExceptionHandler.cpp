@@ -27,7 +27,8 @@ plframe_cursor_t pl_cpp_cursor;
 plcrash_cpp_exception_t pl_cpp_exception;
 
 // Private
-static plcrash_async_thread_state_t pl_cpp_thread_state_final;
+static bool _pl_cpp_calling_our_own_cxa_throw = false;
+static plcrash_async_thread_state_t _pl_cpp_thread_state_final;
 
 static std::terminate_handler originalHandler;
 
@@ -55,7 +56,7 @@ static plcrash_error_t plcr_cpp_exception_callback(plcrash_async_thread_state_t 
         PLCF_DEBUG("CPP excpetion state callbacks returned nil");
         return PLCRASH_EINVAL;
     }
-    pl_cpp_thread_state_final = *state;
+    _pl_cpp_thread_state_final = *state;
     return PLCRASH_ESUCCESS;
 }
 
@@ -67,6 +68,9 @@ extern "C"
     void __cxa_throw(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*)) __attribute__ ((weak));
 
 static void captureStackTraceInCursor(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*)) {
+    if (pl_cpp_has_cursor) {
+        return;
+    }
     plcrash_async_symbol_cache_t findContext;
     plframe_error_t ferr;
     
@@ -85,7 +89,7 @@ static void captureStackTraceInCursor(void* thrown_exception, std::type_info* ti
     if (err != PLCRASH_ESUCCESS) {
         PLCF_DEBUG("Couldn't create cache: %s", plcrash_async_strerror(err));
     }
-    ferr = plframe_cursor_init(&pl_cpp_cursor, mach_task_self(), &pl_cpp_thread_state_final, &shared_image_list);
+    ferr = plframe_cursor_init(&pl_cpp_cursor, mach_task_self(), &_pl_cpp_thread_state_final, &shared_image_list);
     if (ferr != PLFRAME_ESUCCESS) {
         PLCF_DEBUG("An error occured initializing the frame cursor: %s", plframe_strerror(ferr));
         return;
@@ -105,15 +109,20 @@ static void captureStackTraceInCursor(void* thrown_exception, std::type_info* ti
     }
     
     plframe_cursor_restart_recording(&pl_cpp_cursor);
-    plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our swap.
+    plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our captureStackTraceInCursor.
     plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our __cxa_throw.
+    if (_pl_cpp_calling_our_own_cxa_throw == true) {
+        plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our swap.
+    }
 
     pl_cpp_has_cursor = true;
 }
 
 void __cxa_throw(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*))
     {
+        _pl_cpp_calling_our_own_cxa_throw = true;
         captureStackTraceInCursor(NULL, NULL, NULL);
+        _pl_cpp_calling_our_own_cxa_throw = false;
 
         static cxa_throw_type orig_cxa_throw = NULL;
         if(orig_cxa_throw == NULL)
