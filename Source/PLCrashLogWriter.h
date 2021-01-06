@@ -144,6 +144,9 @@ typedef struct plcrash_log_writer {
         /** Flag specifying wether an uncaught exception is available. */
         bool has_exception;
 
+        /** Flag specifying wether the exception is CPP exception. */
+        bool is_cpp_exception;
+
         /** Exception name (may be null) */
         char *name;
 

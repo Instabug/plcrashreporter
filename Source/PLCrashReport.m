@@ -775,11 +775,14 @@ error:
     }
 
     if (frames == nil) {
-        return [[PLCrashReportExceptionInfo alloc] initWithExceptionName: name reason: reason];
+        return [[PLCrashReportExceptionInfo alloc] initWithExceptionName: name
+                                                                  reason: reason
+                                                          isCPPException: exceptionInfo->is_cpp_exception];
     } else {
         return [[PLCrashReportExceptionInfo alloc] initWithExceptionName: name
-                                                                   reason: reason 
-                                                              stackFrames: frames];
+                                                                  reason: reason
+                                                             stackFrames: frames
+                                                          isCPPException: exceptionInfo->is_cpp_exception];
     }
 }
 

@@ -223,14 +223,17 @@ static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t 
     
     signal_info.bsd_info = &bsd_signal_info;
     signal_info.mach_info = NULL;
+
     if (pl_cpp_exception.has_exception) {
         signal_handler_context.writer.uncaught_exception.has_exception = true;
+        signal_handler_context.writer.uncaught_exception.is_cpp_exception = true;
         signal_handler_context.writer.uncaught_exception.reason = pl_cpp_exception.name;
         signal_handler_context.writer.uncaught_exception.name = pl_cpp_exception.reason;
     }
 
     /* Write the report */
-    if (plcrash_write_report(sigctx, pl_mach_thread_self(), &thread_state, &signal_info, &pl_cpp_cursor) != PLCRASH_ESUCCESS) {
+    plframe_cursor_t *recoredCursor = pl_cpp_has_cursor ? &pl_cpp_cursor : NULL;
+    if (plcrash_write_report(sigctx, pl_mach_thread_self(), &thread_state, &signal_info, recoredCursor) != PLCRASH_ESUCCESS) {
         return false;
     }
 

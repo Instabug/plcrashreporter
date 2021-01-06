@@ -250,6 +250,9 @@ message CrashReport {
         /* The exception's original call stack, if available. This may be preserved across rethrow of an exception,
          * and can be used to determine the original call stack. */
         repeated Thread.StackFrame frames = 3;
+
+        /* The exception name that triggered this crash */
+        required bool is_cpp_exception = 4;
     }
 
     /* The exception that triggered the crash (if any) */

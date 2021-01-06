@@ -22,6 +22,7 @@
 #define DESCRIPTION_BUFFER_LENGTH 100
 
 // Public
+bool pl_cpp_has_cursor = false;
 plframe_cursor_t pl_cpp_cursor;
 plcrash_cpp_exception_t pl_cpp_exception;
 
@@ -106,6 +107,8 @@ static void captureStackTraceInCursor(void* thrown_exception, std::type_info* ti
     plframe_cursor_restart_recording(&pl_cpp_cursor);
     plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our swap.
     plframe_cursor_next(&pl_cpp_cursor); // Skip the first frame; our __cxa_throw.
+
+    pl_cpp_has_cursor = true;
 }
 
 void __cxa_throw(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*))
@@ -127,8 +130,6 @@ static void PLCCPPTerminateHandler(void) {
     thread_act_array_t threads;
     mach_msg_type_number_t thread_count;
 
-    plcrash_greg_t pc = plcrash_async_thread_state_get_reg(&pl_cpp_thread_state_final, PLCRASH_REG_IP);
-    PLCF_DEBUG("PC at terminate handler: 0x%" PRIx64, (uint64_t) pc);
     /* Get a list of all threads */
     if (task_threads(mach_task_self(), &threads, &thread_count) != KERN_SUCCESS) {
         PLCF_DEBUG("Fetching thread list failed");
@@ -184,9 +185,15 @@ catch(TYPE value)\
         {
             description = NULL;
         }
-        pl_cpp_exception.has_exception = true;
-        pl_cpp_exception.name = strdup(name);
-        pl_cpp_exception.reason = strdup(description);
+        if (name != NULL || description != NULL) {
+            pl_cpp_exception.has_exception = true;
+            if (name != NULL) {
+                pl_cpp_exception.name = strdup(name);
+            }
+            if (description != NULL) {
+                pl_cpp_exception.reason = strdup(description);
+            }
+        }
     } else {
         PLCF_DEBUG("Captured NSException, let NSException handler handle it ");
     }

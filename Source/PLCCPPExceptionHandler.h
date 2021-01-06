@@ -25,6 +25,9 @@ typedef struct plcrash_cpp_exception {
     char *reason;
 } plcrash_cpp_exception_t;
 
+/// Flags wether the value of `pl_cpp_cursor` is available.
+extern bool pl_cpp_has_cursor;
+
 /// Carries the cursor created during the CPP exception to be used to retrieve the stacktrace.
 extern plframe_cursor_t pl_cpp_cursor;
 

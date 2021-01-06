@@ -779,7 +779,7 @@ const ProtobufCMessageDescriptor plcrash__crash_report__binary_image__descriptor
   (ProtobufCMessageInit) plcrash__crash_report__binary_image__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor plcrash__crash_report__exception__field_descriptors[3] =
+static const ProtobufCFieldDescriptor plcrash__crash_report__exception__field_descriptors[4] =
 {
   {
     "name",
@@ -817,16 +817,29 @@ static const ProtobufCFieldDescriptor plcrash__crash_report__exception__field_de
     0,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "is_cpp_exception",
+    4,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_BOOL,
+    0,   /* quantifier_offset */
+    offsetof(Plcrash__CrashReport__Exception, is_cpp_exception),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned plcrash__crash_report__exception__field_indices_by_name[] = {
   2,   /* field[2] = frames */
+  3,   /* field[3] = is_cpp_exception */
   0,   /* field[0] = name */
   1,   /* field[1] = reason */
 };
 static const ProtobufCIntRange plcrash__crash_report__exception__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 3 }
+  { 0, 4 }
 };
 const ProtobufCMessageDescriptor plcrash__crash_report__exception__descriptor =
 {
@@ -836,7 +849,7 @@ const ProtobufCMessageDescriptor plcrash__crash_report__exception__descriptor =
   "Plcrash__CrashReport__Exception",
   "plcrash",
   sizeof(Plcrash__CrashReport__Exception),
-  3,
+  4,
   plcrash__crash_report__exception__field_descriptors,
   plcrash__crash_report__exception__field_indices_by_name,
   1,  plcrash__crash_report__exception__number_ranges,
