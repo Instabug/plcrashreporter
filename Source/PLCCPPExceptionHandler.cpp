@@ -68,9 +68,6 @@ extern "C"
     void __cxa_throw(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*)) __attribute__ ((weak));
 
 static void captureStackTraceInCursor(void* thrown_exception, std::type_info* tinfo, void (*dest)(void*)) {
-    if (pl_cpp_has_cursor) {
-        return;
-    }
     plcrash_async_symbol_cache_t findContext;
     plframe_error_t ferr;
     
