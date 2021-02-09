@@ -820,9 +820,9 @@ static const ProtobufCFieldDescriptor plcrash__crash_report__exception__field_de
   {
     "is_cpp_exception",
     4,
-    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_LABEL_OPTIONAL,
     PROTOBUF_C_TYPE_BOOL,
-    0,   /* quantifier_offset */
+    offsetof(Plcrash__CrashReport__Exception, has_is_cpp_exception),
     offsetof(Plcrash__CrashReport__Exception, is_cpp_exception),
     NULL,
     NULL,

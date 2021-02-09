@@ -370,11 +370,12 @@ struct  _Plcrash__CrashReport__Exception
   /*
    * The exception name that triggered this crash 
    */
+  protobuf_c_boolean has_is_cpp_exception;
   protobuf_c_boolean is_cpp_exception;
 };
 #define PLCRASH__CRASH_REPORT__EXCEPTION__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&plcrash__crash_report__exception__descriptor) \
-    , NULL, NULL, 0,NULL, 0 }
+    , NULL, NULL, 0,NULL, 0, 0 }
 
 
 /*
