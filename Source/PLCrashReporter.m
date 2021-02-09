@@ -461,7 +461,7 @@ static PLCrashReporter *sharedReporter = nil;
  */
 - (BOOL) otherCrashReporterIsActive {
     NSUncaughtExceptionHandler *uncaughtExcpetionHandler = NSGetUncaughtExceptionHandler();
-    return uncaughtExcpetionHandler == NULL || uncaughtExcpetionHandler == &uncaught_exception_handler;
+    return uncaughtExcpetionHandler != NULL && uncaughtExcpetionHandler != &uncaught_exception_handler;
 }
 
 
