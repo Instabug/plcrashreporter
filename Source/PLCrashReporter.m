@@ -455,6 +455,15 @@ static PLCrashReporter *sharedReporter = nil;
     return [[NSFileManager defaultManager] fileExistsAtPath: [self crashReportPath]];
 }
 
+/**
+ * Returns YES if other crash reporter has set itself as
+ * uncaught exceptions handler
+ */
+- (BOOL) otherCrashReporterIsActive {
+    NSUncaughtExceptionHandler *uncaughtExcpetionHandler = NSGetUncaughtExceptionHandler();
+    return uncaughtExcpetionHandler == NULL || uncaughtExcpetionHandler == &uncaught_exception_handler;
+}
+
 
 /**
  * If an application has a pending crash report, this method returns the crash
